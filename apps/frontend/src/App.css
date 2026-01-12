@@ -1,0 +1,293 @@
+/* 全局样式重置 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  color: #333;
+  background-color: #f5f5f5;
+}
+
+/* 主应用容器 */
+.App {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* 顶部导航栏 */
+.nav-bar {
+  background-color: #2c3e50;
+  color: white;
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.app-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+/* 应用主体容器 */
+.app-container {
+  display: flex;
+  flex: 1;
+}
+
+/* 左侧导航菜单 */
+.side-nav {
+  width: 200px;
+  background-color: white;
+  border-right: 1px solid #e0e0e0;
+  padding: 1rem 0;
+}
+
+.nav-link {
+  display: block;
+  padding: 0.75rem 1.5rem;
+  color: #555;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border-left: 3px solid transparent;
+}
+
+.nav-link:hover {
+  background-color: #f0f0f0;
+}
+
+.nav-link.active {
+  background-color: #e8f4f8;
+  color: #3498db;
+  border-left-color: #3498db;
+  font-weight: 500;
+}
+
+/* 主内容区域 */
+.main-content {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+/* 页面通用样式 */
+h1 {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  color: #2c3e50;
+}
+
+h2 {
+  font-size: 1.4rem;
+  margin: 1.5rem 0 1rem;
+  color: #34495e;
+}
+
+h3 {
+  font-size: 1.1rem;
+  margin: 1rem 0 0.75rem;
+  color: #555;
+}
+
+/* 页面头部 */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+/* 按钮样式 */
+button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+button.primary {
+  background-color: #3498db;
+  color: white;
+}
+
+button.primary:hover {
+  background-color: #2980b9;
+}
+
+button.secondary {
+  background-color: #e0e0e0;
+  color: #555;
+}
+
+button.secondary:hover {
+  background-color: #bdbdbd;
+}
+
+/* 卡片样式 */
+.summary-card,
+.metric-card {
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.summary-card.highlight,
+.metric-card.highlight {
+  background-color: #e8f4f8;
+  border: 1px solid #3498db;
+}
+
+/* 金额样式 */
+.amount,
+.metric-value {
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 0.5rem 0;
+}
+
+.amount.income,
+.metric-value.income {
+  color: #27ae60;
+}
+
+.amount.expense,
+.metric-value.expense {
+  color: #e74c3c;
+}
+
+.amount.profit,
+.metric-value.profit {
+  color: #f39c12;
+}
+
+/* 状态标签样式 */
+.record-status {
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.record-status.completed {
+  background-color: #e8f5e8;
+  color: #27ae60;
+}
+
+.record-status.pending {
+  background-color: #fff3cd;
+  color: #f39c12;
+}
+
+/* 标签样式 */
+.tag {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  background-color: #e0e0e0;
+  color: #555;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+/* 记录列表样式 */
+.records-list {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.record-item {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.record-item:last-child {
+  border-bottom: none;
+}
+
+/* 表单样式 */
+.setting-form {
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #555;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .app-container {
+    flex-direction: column;
+  }
+  
+  .side-nav {
+    width: 100%;
+    display: flex;
+    overflow-x: auto;
+    border-right: none;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 0;
+  }
+  
+  .nav-link {
+    white-space: nowrap;
+    border-left: none;
+    border-bottom: 3px solid transparent;
+  }
+  
+  .nav-link.active {
+    border-left: none;
+    border-bottom-color: #3498db;
+  }
+  
+  .main-content {
+    padding: 1rem;
+  }
+  
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .page-header h1 {
+    margin-bottom: 1rem;
+  }
+}
+
