@@ -51,28 +51,35 @@ const Today = () => {
       <div className="date-section">
         <h2>{new Date().toISOString().split('T')[0]}</h2>
         <div className="date-nav">
-          <button>昨天</button>
-          <button>明天</button>
+          <button className="secondary">昨天</button>
+          <button className="secondary">明天</button>
         </div>
       </div>
       
       {loading ? (
-        <div className="loading">加载中...</div>
+        <div className="card level1" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '48px' }}>
+          <div className="loading"></div>
+        </div>
       ) : error ? (
-        <div className="error">{error}</div>
+        <div className="card level1" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '48px' }}>
+          <div className="error" style={{ color: '#F5222D', textAlign: 'center' }}>
+            <p>{error}</p>
+            <button className="primary" onClick={fetchTodayData} style={{ marginTop: '16px' }}>重试</button>
+          </div>
+        </div>
       ) : (
         <>
-          <div className="summary-section">
-            <div className="summary-card">
+          <div className="summary-section summary-cards-container">
+            <div className="summary-card card level1">
               <h3>今日收入</h3>
               <p className="amount income">¥{summary.total_income.toFixed(2)}</p>
-              <p className="estimate">估算值</p>
+              <p className="estimate" style={{ fontSize: '12px', color: '#8C8C8C' }}>估算值</p>
             </div>
-            <div className="summary-card">
+            <div className="summary-card card level1">
               <h3>今日支出</h3>
               <p className="amount expense">¥{summary.total_expense.toFixed(2)}</p>
             </div>
-            <div className="summary-card highlight">
+            <div className="summary-card card level1 highlight">
               <h3>今日盈亏</h3>
               <p className="amount profit">¥{summary.net_profit.toFixed(2)}</p>
             </div>
@@ -80,7 +87,7 @@ const Today = () => {
           
           <div className="records-section">
             <h3>今日发生了什么</h3>
-            <div className="records-list">
+            <div className="records-list card level1">
               {records.length > 0 ? (
                 records.map((record) => (
                   <div key={record.id} className="record-item">
@@ -91,7 +98,7 @@ const Today = () => {
                     </div>
                     <div className="record-content">
                       <p className="record-desc">{record.metadata?.note || '无描述'}</p>
-                      <p className="record-time">{new Date(record.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                      <p className="record-time" style={{ fontSize: '12px', color: '#8C8C8C' }}>{new Date(record.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
                     </div>
                     <div className={`record-status ${record.status === 'recorded' ? 'completed' : 'pending'}`}>
                       {record.status === 'recorded' ? '已完成' : '待补充'}
@@ -99,7 +106,10 @@ const Today = () => {
                   </div>
                 ))
               ) : (
-                <div className="no-records">今日暂无记录</div>
+                <div className="no-records" style={{ padding: '48px', textAlign: 'center', color: '#8C8C8C' }}>
+                  <p>今日暂无记录</p>
+                  <p style={{ fontSize: '12px', marginTop: '8px' }}>点击右下角按钮开始记录</p>
+                </div>
               )}
             </div>
           </div>

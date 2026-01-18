@@ -32,7 +32,7 @@ def read_root():
 def health_check():
     return {"status": "healthy"}
 
-# 导入路由
+# 导入路由（使用相对导入）
 from routes import api_router
 
 # 注册 API 路由

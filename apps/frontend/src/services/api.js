@@ -94,6 +94,24 @@ const api = {
     list: (shopId) => fetchAPI(`/config?shop_id=${shopId}`),
     get: (shopId, key) => fetchAPI(`/config/${key}?shop_id=${shopId}`),
   },
+  
+  // 新增：资源事件相关 API
+  resourceEvent: {
+    create: (eventData) => fetchAPI('/resource-events', {
+      method: 'POST',
+      body: JSON.stringify(eventData),
+    }),
+    get: (eventId) => fetchAPI(`/resource-events/${eventId}`),
+    list: (shopId, params = {}) => {
+      const urlParams = new URLSearchParams({ shop_id: shopId });
+      if (params.resource_id) urlParams.append('resource_id', params.resource_id);
+      if (params.resource_type) urlParams.append('resource_type', params.resource_type);
+      if (params.event_type) urlParams.append('event_type', params.event_type);
+      if (params.start_time) urlParams.append('start_time', params.start_time);
+      if (params.end_time) urlParams.append('end_time', params.end_time);
+      return fetchAPI(`/resource-events?${urlParams.toString()}`);
+    },
+  },
 };
 
 export default api;

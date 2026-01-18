@@ -53,6 +53,7 @@ dist-ssr
 .env.development.local
 .env.test.local
 .env.production.local
+.env.example
 
 # Database
 *.sqlite3
@@ -81,6 +82,8 @@ ehthumbs.db
 # IDE specific
 .idea/
 .vscode/
+.trae
+.trae/
 *.sublime-project
 *.sublime-workspace
 
@@ -94,3 +97,8 @@ coverage/
 *.tar.gz
 *.tar.bz2
 *.tar.xz
+
+# doc
+docs/
+documents
+documents/

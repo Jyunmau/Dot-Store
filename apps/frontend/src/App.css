@@ -7,8 +7,8 @@
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  color: #333;
-  background-color: #f5f5f5;
+  color: #262626; /* Neutral/700 */
+  background-color: #f5f5f5; /* Neutral/100 */
 }
 
 /* 主应用容器 */
@@ -20,15 +20,16 @@ body {
 
 /* 顶部导航栏 */
 .nav-bar {
-  background-color: #2c3e50;
+  background-color: #1890FF; /* Primary/600 */
   color: white;
-  padding: 1rem 2rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 16px 32px; /* 8的倍数 */
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1); /* Shadow/Level2 */
 }
 
 .app-title {
-  font-size: 1.5rem;
+  font-size: 20px; /* Heading/H4 */
   font-weight: 600;
+  line-height: 24px;
 }
 
 /* 应用主体容器 */
@@ -40,55 +41,64 @@ body {
 /* 左侧导航菜单 */
 .side-nav {
   width: 200px;
-  background-color: white;
-  border-right: 1px solid #e0e0e0;
-  padding: 1rem 0;
+  background-color: #FFFFFF; /* Neutral/White */
+  border-right: 1px solid #F0F0F0; /* Neutral/200 */
+  padding: 16px 0; /* 8的倍数 */
 }
 
 .nav-link {
   display: block;
-  padding: 0.75rem 1.5rem;
-  color: #555;
+  padding: 12px 24px; /* 8的倍数 */
+  color: #595959; /* Neutral/600 */
   text-decoration: none;
   transition: all 0.2s ease;
   border-left: 3px solid transparent;
+  font-size: 14px; /* Body/Small */
+  line-height: 21px;
 }
 
 .nav-link:hover {
-  background-color: #f0f0f0;
+  background-color: #F5F5F5; /* Neutral/100 */
 }
 
 .nav-link.active {
-  background-color: #e8f4f8;
-  color: #3498db;
-  border-left-color: #3498db;
+  background-color: #E6F7FF; /* Primary/100 */
+  color: #1890FF; /* Primary/600 */
+  border-left-color: #1890FF; /* Primary/600 */
   font-weight: 500;
 }
 
 /* 主内容区域 */
 .main-content {
   flex: 1;
-  padding: 2rem;
+  padding: 32px; /* 8的倍数 */
   overflow-y: auto;
+  background-color: #F5F5F5; /* Neutral/100 */
 }
 
 /* 页面通用样式 */
 h1 {
-  font-size: 1.8rem;
-  margin-bottom: 1.5rem;
-  color: #2c3e50;
+  font-size: 24px; /* Heading/H3 */
+  font-weight: 600;
+  line-height: 29px;
+  margin-bottom: 24px; /* 8的倍数 */
+  color: #262626; /* Neutral/700 */
 }
 
 h2 {
-  font-size: 1.4rem;
-  margin: 1.5rem 0 1rem;
-  color: #34495e;
+  font-size: 20px; /* Heading/H4 */
+  font-weight: 600;
+  line-height: 24px;
+  margin: 24px 0 16px; /* 8的倍数 */
+  color: #434343; /* Neutral/800 */
 }
 
 h3 {
-  font-size: 1.1rem;
-  margin: 1rem 0 0.75rem;
-  color: #555;
+  font-size: 18px; /* Heading/H5 */
+  font-weight: 500;
+  line-height: 22px;
+  margin: 16px 0 12px; /* 8的倍数 */
+  color: #595959; /* Neutral/600 */
 }
 
 /* 页面头部 */
@@ -96,120 +106,248 @@ h3 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 24px; /* 8的倍数 */
 }
 
 /* 按钮样式 */
 button {
-  padding: 0.5rem 1rem;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 0.9rem;
   transition: all 0.2s ease;
+  font-weight: 500;
 }
 
+/* Button/Default */
+button {
+  padding: 8px 16px; /* 8的倍数 */
+  font-size: 14px;
+  line-height: 21px;
+}
+
+/* Button/Large */
+button.large {
+  padding: 12px 24px; /* 8的倍数 */
+  font-size: 16px;
+  line-height: 24px;
+}
+
+/* Button/Small */
+button.small {
+  padding: 6px 12px; /* 8的倍数 */
+  font-size: 12px;
+  line-height: 18px;
+}
+
+/* Primary Button */
 button.primary {
-  background-color: #3498db;
+  background-color: #1890FF; /* Primary/600 */
   color: white;
 }
 
-button.primary:hover {
-  background-color: #2980b9;
+/* Danger Button */
+button.danger {
+  background-color: #F5222D; /* Error/Default */
+  color: white;
 }
 
+button.danger:hover {
+  background-color: #FF4D4F; /* Error/600 */
+}
+
+button.danger:active {
+  background-color: #CF1322; /* Error/700 */
+}
+
+button.danger:disabled {
+  background-color: #FFCCC7; /* Error/100 */
+  cursor: not-allowed;
+}
+
+button.primary:hover {
+  background-color: #40A9FF; /* Primary/500 */
+}
+
+button.primary:active {
+  background-color: #096DD9; /* Primary/700 */
+}
+
+button.primary:disabled {
+  background-color: #BAE7FF; /* Primary/200 */
+  cursor: not-allowed;
+}
+
+/* Secondary Button */
 button.secondary {
-  background-color: #e0e0e0;
-  color: #555;
+  background-color: #F5F5F5; /* Neutral/100 */
+  color: #595959; /* Neutral/600 */
+  border: 1px solid #D9D9D9; /* Neutral/300 */
 }
 
 button.secondary:hover {
-  background-color: #bdbdbd;
+  background-color: #F0F0F0; /* Neutral/200 */
+}
+
+button.secondary:active {
+  background-color: #D9D9D9; /* Neutral/300 */
+}
+
+button.secondary:disabled {
+  background-color: #F5F5F5; /* Neutral/100 */
+  color: #BFBFBF; /* Neutral/400 */
+  cursor: not-allowed;
+}
+
+/* Text Button */
+button.text {
+  background-color: transparent;
+  color: #1890FF; /* Primary/600 */
+  padding: 8px;
+}
+
+button.text:hover {
+  background-color: #E6F7FF; /* Primary/100 */
+}
+
+button.text:active {
+  background-color: #BAE7FF; /* Primary/200 */
+}
+
+button.text:disabled {
+  color: #BFBFBF; /* Neutral/400 */
+  cursor: not-allowed;
 }
 
 /* 卡片样式 */
-.summary-card,
-.metric-card {
-  background-color: white;
-  padding: 1.5rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  margin-bottom: 1rem;
-  text-align: center;
+.card {
+  background-color: #FFFFFF; /* Neutral/White */
+  padding: 16px; /* 8的倍数 */
+  border-radius: 4px;
+  box-shadow: 0px 1px 3px rgba(0,0,0,0.1); /* Shadow/Level1 */
+  margin-bottom: 16px; /* 8的倍数 */
+  transition: all 0.2s ease;
 }
 
+/* 统计卡片 */
+.summary-card,
+.metric-card {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 140px;
+}
+
+/* 卡片海拔级别 */
+.card.level1 {
+  box-shadow: 0px 1px 3px rgba(0,0,0,0.1); /* Shadow/Level1 */
+}
+
+.card.level2 {
+  box-shadow: 0px 2px 8px rgba(0,0,0,0.1); /* Shadow/Level2 */
+}
+
+.card.level3 {
+  box-shadow: 0px 4px 16px rgba(0,0,0,0.15); /* Shadow/Level3 */
+}
+
+/* 卡片状态 */
+.card:hover {
+  box-shadow: 0px 2px 8px rgba(0,0,0,0.1); /* Shadow/Level2 */
+}
+
+/* 高亮卡片 */
+.card.highlight,
 .summary-card.highlight,
 .metric-card.highlight {
-  background-color: #e8f4f8;
-  border: 1px solid #3498db;
+  background-color: #E6F7FF; /* Primary/100 */
+  border: 1px solid #1890FF; /* Primary/600 */
+}
+
+/* 带边框卡片 */
+.card.border {
+  border: 1px solid #F0F0F0; /* Neutral/200 */
 }
 
 /* 金额样式 */
 .amount,
 .metric-value {
-  font-size: 2rem;
+  font-size: 24px;
   font-weight: 600;
-  margin: 0.5rem 0;
+  line-height: 36px;
+  margin: 8px 0; /* 8的倍数 */
 }
 
 .amount.income,
 .metric-value.income {
-  color: #27ae60;
+  color: #52C41A; /* Success/Default */
 }
 
 .amount.expense,
 .metric-value.expense {
-  color: #e74c3c;
+  color: #F5222D; /* Error/Default */
 }
 
 .amount.profit,
 .metric-value.profit {
-  color: #f39c12;
+  color: #FA541C; /* Warning/Default */
 }
 
 /* 状态标签样式 */
 .record-status {
-  padding: 0.25rem 0.5rem;
+  display: inline-block;
+  padding: 4px 8px; /* 8的倍数 */
   border-radius: 12px;
-  font-size: 0.8rem;
+  font-size: 12px;
+  line-height: 18px;
   font-weight: 500;
 }
 
 .record-status.completed {
-  background-color: #e8f5e8;
-  color: #27ae60;
+  background-color: #F6FFED; /* Success/100 */
+  color: #52C41A; /* Success/Default */
+  border: 1px solid #B7EB8F; /* Success/200 */
 }
 
 .record-status.pending {
-  background-color: #fff3cd;
-  color: #f39c12;
+  background-color: #FFFBE6; /* Warning/100 */
+  color: #FA541C; /* Warning/Default */
+  border: 1px solid #FFD591; /* Warning/200 */
 }
 
 /* 标签样式 */
 .tag {
   display: inline-block;
-  padding: 0.25rem 0.5rem;
-  background-color: #e0e0e0;
-  color: #555;
+  padding: 4px 8px; /* 8的倍数 */
+  background-color: #F0F0F0; /* Neutral/200 */
+  color: #595959; /* Neutral/600 */
   border-radius: 4px;
-  font-size: 0.8rem;
-  margin-right: 0.5rem;
-  margin-bottom: 0.5rem;
+  font-size: 12px;
+  line-height: 18px;
+  margin-right: 8px; /* 8的倍数 */
+  margin-bottom: 8px; /* 8的倍数 */
+  border: 1px solid #D9D9D9; /* Neutral/300 */
 }
 
 /* 记录列表样式 */
 .records-list {
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  background-color: #FFFFFF; /* Neutral/White */
+  border-radius: 4px;
+  box-shadow: 0px 1px 3px rgba(0,0,0,0.1); /* Shadow/Level1 */
   overflow: hidden;
 }
 
 .record-item {
   display: flex;
   align-items: center;
-  padding: 1rem;
-  border-bottom: 1px solid #f0f0f0;
+  padding: 16px; /* 8的倍数 */
+  border-bottom: 1px solid #F5F5F5; /* Neutral/100 */
+  transition: background-color 0.2s ease;
+}
+
+.record-item:hover {
+  background-color: #F5F5F5; /* Neutral/100 */
 }
 
 .record-item:last-child {
@@ -217,44 +355,174 @@ button.secondary:hover {
 }
 
 /* 表单样式 */
-.setting-form {
-  background-color: white;
-  padding: 1.5rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+.setting-form,
+.record-form {
+  background-color: #FFFFFF; /* Neutral/White */
+  padding: 24px; /* 8的倍数 */
+  border-radius: 4px;
+  box-shadow: 0px 1px 3px rgba(0,0,0,0.1); /* Shadow/Level1 */
 }
 
 .form-group {
-  margin-bottom: 1.5rem;
+  margin-bottom: 24px; /* 8的倍数 */
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 0.5rem;
+  margin-bottom: 8px; /* 8的倍数 */
   font-weight: 500;
-  color: #555;
+  color: #595959; /* Neutral/600 */
+  font-size: 14px;
+  line-height: 21px;
 }
 
 .form-group input,
-.form-group select {
+.form-group select,
+.form-group textarea {
   width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #e0e0e0;
+  padding: 8px 12px; /* 8的倍数 */
+  border: 1px solid #D9D9D9; /* Neutral/300 */
   border-radius: 4px;
-  font-size: 0.9rem;
+  font-size: 14px;
+  line-height: 21px;
+  transition: all 0.2s ease;
+  background-color: #FFFFFF; /* Neutral/White */
+  color: #262626; /* Neutral/700 */
 }
 
+/* 输入框状态 */
 .form-group input:focus,
-.form-group select:focus {
+.form-group select:focus,
+.form-group textarea:focus {
   outline: none;
-  border-color: #3498db;
-  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+  border-color: #1890FF; /* Primary/600 */
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+.form-group input:hover,
+.form-group select:hover,
+.form-group textarea:hover {
+  border-color: #40A9FF; /* Primary/500 */
+}
+
+.form-group input:disabled,
+.form-group select:disabled,
+.form-group textarea:disabled {
+  background-color: #F5F5F5; /* Neutral/100 */
+  color: #BFBFBF; /* Neutral/400 */
+  cursor: not-allowed;
+}
+
+/* 错误状态 */
+.form-group.error input,
+.form-group.error select,
+.form-group.error textarea {
+  border-color: #F5222D; /* Error/Default */
+}
+
+.form-group.error input:focus,
+.form-group.error select:focus,
+.form-group.error textarea:focus {
+  box-shadow: 0 0 0 2px rgba(245, 34, 45, 0.2);
+}
+
+/* 辅助文字 */
+.form-group .helper-text {
+  font-size: 12px;
+  line-height: 18px;
+  margin-top: 4px;
+  color: #8C8C8C; /* Neutral/500 */
+}
+
+.form-group.error .helper-text {
+  color: #F5222D; /* Error/Default */
+}
+
+/* 文本域 */
+.form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* Today页面样式 */
+.today-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+/* 日期导航区域 */
+.date-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding: 16px;
+  background-color: #FFFFFF;
+  border-radius: 4px;
+  box-shadow: 0px 1px 3px rgba(0,0,0,0.1);
+}
+
+.date-nav button {
+  margin-left: 12px;
+}
+
+/* 统计卡片容器 */
+.summary-section {
+  margin-bottom: 32px;
+}
+
+/* 记录列表区域 */
+.records-section {
+  margin-bottom: 32px;
+}
+
+/* 操作按钮区域 */
+.actions-section {
+  margin-top: auto;
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  padding: 24px 0;
+  border-top: 1px solid #F0F0F0;
+}
+
+.action-btn {
+  padding: 12px 24px;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 500;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.action-btn.primary {
+  background-color: #1890FF;
+  color: white;
+}
+
+.action-btn.secondary {
+  background-color: #F5F5F5;
+  color: #595959;
+  border: 1px solid #D9D9D9;
 }
 
 /* 响应式设计 */
-@media (max-width: 768px) {
+
+/* 移动端 (iPhone) - 375px */
+@media (max-width: 375px) {
   .app-container {
     flex-direction: column;
+  }
+  
+  .nav-bar {
+    padding: 12px 16px; /* 8的倍数 */
+  }
+  
+  .app-title {
+    font-size: 18px; /* Heading/H5 */
+    line-height: 22px;
   }
   
   .side-nav {
@@ -262,7 +530,7 @@ button.secondary:hover {
     display: flex;
     overflow-x: auto;
     border-right: none;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid #F0F0F0; /* Neutral/200 */
     padding: 0;
   }
   
@@ -270,15 +538,17 @@ button.secondary:hover {
     white-space: nowrap;
     border-left: none;
     border-bottom: 3px solid transparent;
+    padding: 12px 16px; /* 8的倍数 */
   }
   
   .nav-link.active {
     border-left: none;
-    border-bottom-color: #3498db;
+    border-bottom-color: #1890FF; /* Primary/600 */
+    background-color: transparent;
   }
   
   .main-content {
-    padding: 1rem;
+    padding: 16px; /* 8的倍数 */
   }
   
   .page-header {
@@ -287,7 +557,165 @@ button.secondary:hover {
   }
   
   .page-header h1 {
-    margin-bottom: 1rem;
+    margin-bottom: 16px; /* 8的倍数 */
+    font-size: 20px; /* Heading/H4 */
+    line-height: 24px;
+  }
+  
+  /* 统计卡片在移动端的布局 */
+  .summary-cards-container {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* 按钮在移动端的布局 */
+  .quick-actions {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .quick-actions button {
+    margin-bottom: 8px; /* 8的倍数 */
+  }
+}
+
+/* 平板端 (iPad) - 768px */
+@media (min-width: 376px) and (max-width: 1199px) {
+  .app-container {
+    flex-direction: column;
+  }
+  
+  .nav-bar {
+    padding: 16px 24px; /* 8的倍数 */
+  }
+  
+  .side-nav {
+    width: 100%;
+    display: flex;
+    overflow-x: auto;
+    border-right: none;
+    border-bottom: 1px solid #F0F0F0; /* Neutral/200 */
+    padding: 0;
+  }
+  
+  .nav-link {
+    white-space: nowrap;
+    border-left: none;
+    border-bottom: 3px solid transparent;
+    padding: 12px 24px; /* 8的倍数 */
+  }
+  
+  .nav-link.active {
+    border-left: none;
+    border-bottom-color: #1890FF; /* Primary/600 */
+    background-color: transparent;
+  }
+  
+  .main-content {
+    padding: 24px; /* 8的倍数 */
+  }
+  
+  /* 统计卡片在平板端的布局 */
+  .summary-cards-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 16px; /* 8的倍数 */
+  }
+  
+  /* 按钮在平板端的布局 */
+  .quick-actions {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .quick-actions button {
+    margin-right: 8px; /* 8的倍数 */
+    margin-bottom: 8px; /* 8的倍数 */
+  }
+}
+
+/* 桌面端 (≥1200px) */
+@media (min-width: 1200px) {
+  /* 统计卡片在桌面端的布局 */
+  .summary-cards-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 24px; /* 8的倍数 */
+  }
+  
+  /* 按钮在桌面端的布局 */
+  .quick-actions {
+    display: flex;
+  }
+  
+  .quick-actions button {
+    margin-right: 16px; /* 8的倍数 */
+  }
+}
+
+/* 大屏幕 (≥1600px) */
+@media (min-width: 1600px) {
+  .app-container {
+    max-width: 1600px;
+    margin: 0 auto;
+  }
+}
+
+/* 加载状态动画 */
+.loading {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border: 3px solid rgba(24, 144, 255, 0.1);
+  border-radius: 50%;
+  border-top-color: #1890FF;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Today页面特定响应式样式 */
+
+/* 移动端 */
+@media (max-width: 375px) {
+  .date-section {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  
+  .date-nav {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+  }
+  
+  .date-nav button {
+    flex: 1;
+    margin-left: 0;
+  }
+  
+  .actions-section {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .action-btn {
+    flex: 1;
+  }
+}
+
+/* 平板端 */
+@media (min-width: 376px) and (max-width: 1199px) {
+  .actions-section {
+    flex-wrap: wrap;
+  }
+  
+  .action-btn {
+    flex: 1;
+    min-width: 150px;
   }
 }
 
