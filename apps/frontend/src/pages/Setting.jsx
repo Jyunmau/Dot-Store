@@ -1,95 +1,71 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Setting = () => {
+  const navigate = useNavigate();
+
+  // 设置选项列表
+  const settingsOptions = [
+    {
+      id: 'account-categories',
+      name: '账目分类管理',
+      description: '管理收入和支出的分类',
+      icon: '📋'
+    },
+    {
+      id: 'tags',
+      name: '标签管理',
+      description: '管理记录的标签',
+      icon: '🏷️'
+    },
+    {
+      id: 'business-types',
+      name: '业务类型管理',
+      description: '管理业务类型设置',
+      icon: '💼'
+    },
+    {
+      id: 'account-settings',
+      name: '账户设置',
+      description: '管理账户基本信息',
+      icon: '👤'
+    },
+    {
+      id: 'about',
+      name: '关于',
+      description: '关于Dot-Store应用',
+      icon: 'ℹ️'
+    }
+  ];
+
+  // 处理设置选项点击
+  const handleSettingClick = (optionId) => {
+    // 导航到相应的设置页面
+    navigate(`/setting/${optionId}`);
+  };
+
   return (
     <div className="setting-page">
-      <h1>设置</h1>
-      
-      <div className="setting-section">
-        <h2>基础信息</h2>
-        <div className="setting-form">
-          <div className="form-group">
-            <label>店铺名称</label>
-            <input type="text" placeholder="输入店铺名称" defaultValue="我的小店" />
-          </div>
-          <div className="form-group">
-            <label>营业类型</label>
-            <select defaultValue="餐饮">
-              <option>餐饮</option>
-              <option>咖啡</option>
-              <option>其他</option>
-            </select>
-          </div>
-        </div>
+      <div className="page-header">
+        <h1>设置</h1>
       </div>
       
-      <div className="setting-section">
-        <h2>标签管理</h2>
-        <div className="tags-management">
-          <div className="tags-list">
-            <div className="tag-item">
-              <div className="tag-info">
-                <div className="tag-name">堂食</div>
-                <div className="tag-description">堂食订单</div>
-              </div>
-              <div className="tag-actions">
-                <button className="tag-action-btn active">启用</button>
-                <button className="tag-action-btn">编辑</button>
-              </div>
+      {/* 设置选项列表 */}
+      <div className="settings-options">
+        {settingsOptions.map((option) => (
+          <div 
+            key={option.id} 
+            className="setting-option card level1"
+            onClick={() => handleSettingClick(option.id)}
+          >
+            <div className="setting-option-icon">{option.icon}</div>
+            <div className="setting-option-info">
+              <h3 className="setting-option-name">{option.name}</h3>
+              <p className="setting-option-description">{option.description}</p>
             </div>
-            <div className="tag-item">
-              <div className="tag-info">
-                <div className="tag-name">外卖</div>
-                <div className="tag-description">外卖订单</div>
-              </div>
-              <div className="tag-actions">
-                <button className="tag-action-btn active">启用</button>
-                <button className="tag-action-btn">编辑</button>
-              </div>
-            </div>
-            <div className="tag-item">
-              <div className="tag-info">
-                <div className="tag-name">活动</div>
-                <div className="tag-description">活动订单</div>
-              </div>
-              <div className="tag-actions">
-                <button className="tag-action-btn active">启用</button>
-                <button className="tag-action-btn">编辑</button>
-              </div>
-            </div>
+            <div className="setting-option-arrow">›</div>
           </div>
-          <button className="add-tag-btn">添加标签</button>
-        </div>
-      </div>
-      
-      <div className="setting-section">
-        <h2>显示配置</h2>
-        <div className="toggle-settings">
-          <div className="toggle-item">
-            <div className="toggle-info">
-              <div className="toggle-name">显示估算提示</div>
-              <div className="toggle-description">在收入显示时显示估算标记</div>
-            </div>
-            <div className="toggle-switch">
-              <input type="checkbox" id="show-estimate" defaultChecked />
-              <label htmlFor="show-estimate"></label>
-            </div>
-          </div>
-          <div className="toggle-item">
-            <div className="toggle-info">
-              <div className="toggle-name">提示未补全记录</div>
-              <div className="toggle-description">在首页提示待补充的记录</div>
-            </div>
-            <div className="toggle-switch">
-              <input type="checkbox" id="remind-pending" defaultChecked />
-              <label htmlFor="remind-pending"></label>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <div className="setting-actions">
-        <button className="save-btn">保存设置</button>
+        ))}
       </div>
     </div>
   );

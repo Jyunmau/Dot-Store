@@ -1,153 +1,275 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import api from '../services/api';
 
 const Record = () => {
-  const [records, setRecords] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState({
-    date: '今天',
-    tag: '全部',
-    status: '全部'
+  const [recordType, setRecordType] = useState('order'); // order, income, expense
+  const [formData, setFormData] = useState({
+    amount: '',
+    type: '',
+    tags: [],
+    note: ''
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  // 加载订单记录
+  // 从URL状态中获取记录类型
   useEffect(() => {
-    const fetchRecords = async () => {
-      try {
-        setLoading(true);
-        // 这里使用模拟的shop_id=1，实际应用中应该从登录状态获取
-        const response = await api.order.list(1);
-        setRecords(response);
-      } catch (error) {
-        console.error('获取订单记录失败:', error);
-        // 为了演示，使用模拟数据
-        setRecords([
-          {
-            id: 1,
-            created_at: new Date().toISOString(),
-            tags: ['堂食', '活动'],
-            metadata: { note: '新品测试订单' },
-            status: 'completed'
-          },
-          {
-            id: 2,
-            created_at: new Date().toISOString(),
-            tags: ['外卖'],
-            metadata: { note: '美团外卖订单' },
-            status: 'recorded'
-          },
-          {
-            id: 3,
-            created_at: new Date().toISOString(),
-            tags: ['堂食'],
-            metadata: { note: '常规订单' },
-            status: 'completed'
-          }
-        ]);
-      } finally {
-        setLoading(false);
+    if (location.state?.type) {
+      setRecordType(location.state.type);
+      setFormData(prev => ({ ...prev, type: location.state.type }));
+    }
+  }, [location.state?.type]);
+
+  // 表单字段变化处理
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  // 标签选择处理
+  const handleTagChange = (e) => {
+    const tag = e.target.value;
+    setFormData(prev => {
+      if (prev.tags.includes(tag)) {
+        return { ...prev, tags: prev.tags.filter(t => t !== tag) };
+      } else {
+        return { ...prev, tags: [...prev.tags, tag] };
       }
-    };
+    });
+  };
 
-    fetchRecords();
-  }, [filters]);
+  // 记录类型选择处理
+  const handleTypeChange = (type) => {
+    setRecordType(type);
+    setFormData(prev => ({ ...prev, type }));
+  };
 
-  // 创建新记录
-  const handleNewRecord = async () => {
+  // 表单提交处理
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
     try {
-      const newRecord = {
-        shop_id: 1,
-        amount_estimate: 0,
-        tags: [],
-        metadata: {}
+      setLoading(true);
+      setError(null);
+      
+      // 验证表单数据
+      if (!formData.amount || isNaN(parseFloat(formData.amount))) {
+        throw new Error('请输入有效的金额');
+      }
+      
+      // 模拟 shop_id，实际应该从登录状态或上下文获取
+      const shopId = 1;
+      
+      // 根据记录类型调用不同的API
+      const recordData = {
+        shop_id: shopId,
+        amount: parseFloat(formData.amount),
+        type: recordType,
+        tags: formData.tags,
+        metadata: { note: formData.note },
+        status: 'recorded'
       };
-      const response = await api.order.create(newRecord);
-      console.log('新记录创建成功:', response);
-      // 重新加载记录列表
-      const updatedRecords = await api.order.list(1);
-      setRecords(updatedRecords);
-    } catch (error) {
-      console.error('创建新记录失败:', error);
-      alert('创建新记录失败，请稍后重试');
+      
+      // 这里根据记录类型调用不同的API，目前只有订单API，所以统一调用订单API
+      await api.order.create(recordData);
+      
+      setSuccess(true);
+      
+      // 重置表单
+      setFormData({
+        amount: '',
+        type: recordType,
+        tags: [],
+        note: ''
+      });
+      
+      // 2秒后跳转到首页
+      setTimeout(() => {
+        navigate('/');
+      }, 2000);
+      
+    } catch (err) {
+      setError(err.message || '创建记录失败，请稍后重试');
+    } finally {
+      setLoading(false);
     }
   };
 
-  // 格式化时间
-  const formatTime = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+  // 取消按钮处理
+  const handleCancel = () => {
+    navigate('/');
   };
 
   return (
     <div className="record-page">
       <div className="page-header">
         <h1>记录</h1>
-        <button className="new-record-btn" onClick={handleNewRecord}>
-          新记录
+      </div>
+      
+      {/* 记录类型选择 */}
+      <div className="record-type-selection card level1">
+        <button 
+          className={`record-type-btn ${recordType === 'order' ? 'active' : ''}`}
+          onClick={() => handleTypeChange('order')}
+        >
+          订单记录
+        </button>
+        <button 
+          className={`record-type-btn ${recordType === 'income' ? 'active' : ''}`}
+          onClick={() => handleTypeChange('income')}
+        >
+          收入记录
+        </button>
+        <button 
+          className={`record-type-btn ${recordType === 'expense' ? 'active' : ''}`}
+          onClick={() => handleTypeChange('expense')}
+        >
+          支出记录
         </button>
       </div>
       
-      <div className="filters-section">
-        <div className="filter-group">
-          <label>按日期</label>
-          <select 
-            value={filters.date}
-            onChange={(e) => setFilters({...filters, date: e.target.value})}
-          >
-            <option>今天</option>
-            <option>昨天</option>
-            <option>最近7天</option>
-            <option>自定义</option>
-          </select>
-        </div>
-        
-        <div className="filter-group">
-          <label>按标签</label>
-          <select 
-            value={filters.tag}
-            onChange={(e) => setFilters({...filters, tag: e.target.value})}
-          >
-            <option>全部</option>
-            <option>堂食</option>
-            <option>外卖</option>
-            <option>活动</option>
-            <option>临时</option>
-          </select>
-        </div>
-        
-        <div className="filter-group">
-          <label>按状态</label>
-          <select 
-            value={filters.status}
-            onChange={(e) => setFilters({...filters, status: e.target.value})}
-          >
-            <option>全部</option>
-            <option>已完成</option>
-            <option>待补充</option>
-          </select>
-        </div>
-      </div>
-      
-      {loading ? (
-        <div className="loading">加载中...</div>
-      ) : (
-        <div className="records-list">
-          {records.map(record => (
-            <div key={record.id} className="record-item">
-              <div className="record-time">{formatTime(record.created_at)}</div>
-              <div className="record-tags">
-                {record.tags && record.tags.map((tag, index) => (
+      {/* 记录表单 */}
+      <div className="record-form-container">
+        {success ? (
+          <div className="success-message card level1">
+            <h3>记录保存成功！</h3>
+            <p>2秒后自动返回首页...</p>
+          </div>
+        ) : (
+          <form className="record-form card level1" onSubmit={handleSubmit}>
+            {error && (
+              <div className="error-message">
+                {error}
+              </div>
+            )}
+            
+            {/* 金额字段 */}
+            <div className="form-group">
+              <label htmlFor="amount">金额</label>
+              <input
+                type="number"
+                id="amount"
+                name="amount"
+                value={formData.amount}
+                onChange={handleInputChange}
+                placeholder="请输入金额"
+                step="0.01"
+                required
+              />
+            </div>
+            
+            {/* 类型字段 */}
+            <div className="form-group">
+              <label htmlFor="type">类型</label>
+              <select
+                id="type"
+                name="type"
+                value={formData.type}
+                onChange={handleInputChange}
+                required
+              >
+                <option value="">请选择类型</option>
+                {recordType === 'order' && (
+                  <>
+                    <option value="堂食">堂食</option>
+                    <option value="外卖">外卖</option>
+                    <option value="自提">自提</option>
+                  </>
+                )}
+                {recordType === 'income' && (
+                  <>
+                    <option value="销售收入">销售收入</option>
+                    <option value="其他收入">其他收入</option>
+                  </>
+                )}
+                {recordType === 'expense' && (
+                  <>
+                    <option value="食材采购">食材采购</option>
+                    <option value="房租水电">房租水电</option>
+                    <option value="人员工资">人员工资</option>
+                    <option value="其他支出">其他支出</option>
+                  </>
+                )}
+              </select>
+            </div>
+            
+            {/* 标签字段 */}
+            <div className="form-group">
+              <label>标签</label>
+              <div className="tag-selector">
+                <label className="tag-option">
+                  <input
+                    type="checkbox"
+                    value="活动"
+                    checked={formData.tags.includes('活动')}
+                    onChange={handleTagChange}
+                  />
+                  活动
+                </label>
+                <label className="tag-option">
+                  <input
+                    type="checkbox"
+                    value="新品"
+                    checked={formData.tags.includes('新品')}
+                    onChange={handleTagChange}
+                  />
+                  新品
+                </label>
+                <label className="tag-option">
+                  <input
+                    type="checkbox"
+                    value="促销"
+                    checked={formData.tags.includes('促销')}
+                    onChange={handleTagChange}
+                  />
+                  促销
+                </label>
+                <label className="tag-option">
+                  <input
+                    type="checkbox"
+                    value="临时"
+                    checked={formData.tags.includes('临时')}
+                    onChange={handleTagChange}
+                  />
+                  临时
+                </label>
+              </div>
+              <div className="selected-tags">
+                {formData.tags.map((tag, index) => (
                   <span key={index} className="tag">{tag}</span>
                 ))}
               </div>
-              <div className="record-desc">{record.metadata?.note || '无描述'}</div>
-              <div className={`record-status ${record.status === 'completed' ? 'completed' : 'pending'}`}>
-                {record.status === 'completed' ? '已完成' : '待补充'}
-              </div>
             </div>
-          ))}
-        </div>
-      )}
+            
+            {/* 备注字段 */}
+            <div className="form-group">
+              <label htmlFor="note">备注</label>
+              <textarea
+                id="note"
+                name="note"
+                value={formData.note}
+                onChange={handleInputChange}
+                placeholder="请输入备注信息"
+                rows={4}
+              ></textarea>
+            </div>
+            
+            {/* 表单操作按钮 */}
+            <div className="form-actions">
+              <button type="button" className="secondary" onClick={handleCancel} disabled={loading}>
+                取消
+              </button>
+              <button type="submit" className="primary" disabled={loading}>
+                {loading ? '保存中...' : '保存记录'}
+              </button>
+            </div>
+          </form>
+        )}
+      </div>
     </div>
   );
 };

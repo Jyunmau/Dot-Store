@@ -18,34 +18,45 @@ body {
   min-height: 100vh;
 }
 
-/* 顶部导航栏 */
-.nav-bar {
-  background-color: #1890FF; /* Primary/600 */
-  color: white;
-  padding: 16px 32px; /* 8的倍数 */
-  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1); /* Shadow/Level2 */
+/* 主应用布局 */
+.main-app-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* 桌面端侧边导航 */
+.desktop-side-nav {
+  width: 200px;
+  background-color: #FFFFFF; /* Neutral/White */
+  border-right: 1px solid #F0F0F0; /* Neutral/200 */
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+}
+
+.side-nav-header {
+  padding: 24px 24px 16px; /* 8的倍数 */
+  border-bottom: 1px solid #F0F0F0; /* Neutral/200 */
+}
+
+.side-nav-menu {
+  flex: 1;
+  padding: 16px 0; /* 8的倍数 */
 }
 
 .app-title {
   font-size: 20px; /* Heading/H4 */
   font-weight: 600;
   line-height: 24px;
+  color: #1890FF; /* Primary/600 */
 }
 
-/* 应用主体容器 */
-.app-container {
-  display: flex;
-  flex: 1;
-}
-
-/* 左侧导航菜单 */
-.side-nav {
-  width: 200px;
-  background-color: #FFFFFF; /* Neutral/White */
-  border-right: 1px solid #F0F0F0; /* Neutral/200 */
-  padding: 16px 0; /* 8的倍数 */
-}
-
+/* 导航链接样式 */
 .nav-link {
   display: block;
   padding: 12px 24px; /* 8的倍数 */
@@ -68,12 +79,135 @@ body {
   font-weight: 500;
 }
 
+/* 平板端和移动端顶部导航 */
+.mobile-tablet-header {
+  background-color: #1890FF; /* Primary/600 */
+  color: white;
+  padding: 16px 24px; /* 8的倍数 */
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1); /* Shadow/Level2 */
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 90;
+}
+
+.mobile-tablet-header .app-title {
+  color: white;
+  margin: 0;
+  font-size: 18px; /* Heading/H5 */
+}
+
+/* 移动端底部导航 */
+.mobile-bottom-nav {
+  background-color: #FFFFFF; /* Neutral/White */
+  border-top: 1px solid #F0F0F0; /* Neutral/200 */
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 90;
+}
+
+.mobile-bottom-nav .nav-link {
+  border-left: none;
+  border-top: 3px solid transparent;
+  text-align: center;
+  padding: 12px 8px; /* 8的倍数 */
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.mobile-bottom-nav .nav-link.active {
+  border-left: none;
+  border-top-color: #1890FF; /* Primary/600 */
+  background-color: transparent;
+}
+
 /* 主内容区域 */
 .main-content {
   flex: 1;
   padding: 32px; /* 8的倍数 */
   overflow-y: auto;
   background-color: #F5F5F5; /* Neutral/100 */
+  margin-left: 200px;
+  min-height: 100vh;
+  padding-bottom: 80px; /* 为移动端底部导航留出空间 */
+  transition: all 0.3s ease;
+  animation: fadeIn 0.5s ease-in;
+}
+
+/* 页面淡入动画 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 卡片悬停效果增强 */
+.card {
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* 按钮微交互效果 */
+button {
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+button:active::before {
+  width: 300px;
+  height: 300px;
+}
+
+/* 输入框聚焦动画 */
+input:focus, select:focus, textarea:focus {
+  transition: all 0.2s ease;
+}
+
+/* 导航链接过渡效果 */
+.nav-link {
+  transition: all 0.2s ease;
+}
+
+/* 记录项悬停效果 */
+.record-item:hover {
+  transition: all 0.2s ease;
+}
+
+/* 图表动画效果 */
+.bar-fill {
+  transition: height 0.5s ease;
+}
+
+.pie-slice {
+  transition: all 0.5s ease;
 }
 
 /* 页面通用样式 */
@@ -444,6 +578,523 @@ button.text:disabled {
   min-height: 80px;
 }
 
+/* 记录页面特定样式 */
+
+/* 记录类型选择 */
+.record-type-selection {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding: 16px;
+}
+
+.record-type-btn {
+  flex: 1;
+  max-width: 200px;
+  padding: 12px 24px;
+  border: 1px solid #D9D9D9;
+  background-color: #FFFFFF;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.record-type-btn:hover {
+  border-color: #1890FF;
+  color: #1890FF;
+}
+
+.record-type-btn.active {
+  background-color: #1890FF;
+  color: #FFFFFF;
+  border-color: #1890FF;
+}
+
+/* 记录表单容器 */
+.record-form-container {
+  margin-bottom: 32px;
+}
+
+/* 表单操作按钮 */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: 32px;
+}
+
+/* 错误和成功消息 */
+.error-message {
+  background-color: #FFF2F0;
+  color: #F5222D;
+  padding: 12px 16px;
+  border-radius: 4px;
+  margin-bottom: 24px;
+  font-size: 14px;
+  border: 1px solid #FFCCC7;
+}
+
+.success-message {
+  text-align: center;
+  padding: 48px 24px;
+  background-color: #F6FFED;
+  border: 1px solid #B7EB8F;
+  color: #52C41A;
+}
+
+.success-message h3 {
+  margin-bottom: 16px;
+  color: #52C41A;
+}
+
+/* 标签选择器样式 */
+.tag-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.tag-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #595959;
+  user-select: none;
+}
+
+.tag-option input[type="checkbox"] {
+  width: auto;
+  margin: 0;
+}
+
+.selected-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.selected-tags .tag {
+  margin: 0;
+}
+
+/* 分类账页面特定样式 */
+
+/* 筛选和搜索区域样式 */
+.filters-search-section {
+  margin-bottom: 24px;
+  padding: 16px 24px;
+}
+
+.filters-container {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 180px;
+}
+
+.filter-group label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #595959;
+}
+
+.search-container {
+  margin-top: 8px;
+}
+
+.search-container input {
+  width: 100%;
+  max-width: 300px;
+  padding: 8px 12px;
+  border: 1px solid #D9D9D9;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.search-container input:focus {
+  outline: none;
+  border-color: #1890FF;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+/* 分类账记录样式 */
+.ledger-record-item {
+  display: flex;
+  align-items: center;
+  padding: 16px 24px;
+  border-bottom: 1px solid #F5F5F5;
+  transition: all 0.2s ease;
+}
+
+.ledger-record-item:last-child {
+  border-bottom: none;
+}
+
+.ledger-record-item:hover {
+  background-color: #F5F5F5;
+}
+
+.record-date {
+  min-width: 120px;
+  font-size: 14px;
+  color: #8C8C8C;
+}
+
+.record-desc {
+  flex: 1;
+  margin: 0 24px;
+}
+
+.record-desc h4 {
+  margin: 0 0 4px 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: #262626;
+}
+
+.record-type {
+  margin: 0;
+  font-size: 14px;
+  color: #8C8C8C;
+}
+
+.record-amount {
+  min-width: 120px;
+  text-align: right;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.record-actions {
+  display: flex;
+  gap: 16px;
+  margin-left: 24px;
+}
+
+/* 删除确认框样式 */
+.delete-confirm {
+  background-color: #FFFFFF;
+  border: 1px solid #D9D9D9;
+  border-radius: 4px;
+  padding: 16px;
+  margin-top: 16px;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.delete-confirm p {
+  margin-bottom: 16px;
+  font-size: 14px;
+  color: #262626;
+}
+
+.confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+}
+
+/* 文本按钮危险样式 */
+button.text.danger {
+  color: #F5222D;
+}
+
+button.text.danger:hover {
+  background-color: #FFF2F0;
+  color: #FF4D4F;
+}
+
+/* 报表页面特定样式 */
+
+/* 日期范围选择样式 */
+.date-range-section {
+  margin-bottom: 24px;
+  padding: 16px 24px;
+}
+
+.date-range-buttons {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.range-btn {
+  padding: 8px 16px;
+  border: 1px solid #D9D9D9;
+  background-color: #FFFFFF;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.range-btn:hover {
+  border-color: #1890FF;
+  color: #1890FF;
+}
+
+.range-btn.active {
+  background-color: #1890FF;
+  color: #FFFFFF;
+  border-color: #1890FF;
+}
+
+/* 自定义日期范围样式 */
+.custom-date-range {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.custom-date-range input {
+  padding: 8px 12px;
+  border: 1px solid #D9D9D9;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.custom-date-range input:focus {
+  outline: none;
+  border-color: #1890FF;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+.date-separator {
+  color: #8C8C8C;
+  font-size: 14px;
+}
+
+/* 报表区域样式 */
+.report-section {
+  margin-bottom: 32px;
+}
+
+.report-section h2 {
+  margin-bottom: 16px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #262626;
+}
+
+.report-card {
+  padding: 24px;
+}
+
+/* 图表容器样式 */
+.chart-container {
+  margin-bottom: 24px;
+  height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #F9F9F9;
+  border-radius: 4px;
+}
+
+/* 饼图样式 */
+.pie-chart-placeholder {
+  width: 200px;
+  height: 200px;
+  position: relative;
+}
+
+.pie-chart {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: conic-gradient(
+    hsl(0, 70%, 60%) 0deg 216deg,
+    hsl(120, 70%, 60%) 216deg 316.8deg,
+    hsl(240, 70%, 60%) 316.8deg 360deg
+  );
+  position: relative;
+}
+
+.pie-slice {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform-origin: 50% 50%;
+}
+
+/* 柱状图样式 */
+.bar-chart-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 24px;
+  padding: 24px;
+}
+
+.bar-chart {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 24px;
+  width: 100%;
+  height: 100%;
+}
+
+.bar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  max-width: 80px;
+}
+
+.bar-label {
+  font-size: 12px;
+  color: #8C8C8C;
+  text-align: center;
+}
+
+.bar-container {
+  flex: 1;
+  width: 100%;
+  background-color: #F0F0F0;
+  border-radius: 4px 4px 0 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  padding: 4px;
+  min-height: 200px;
+}
+
+.bar-fill {
+  width: 100%;
+  border-radius: 4px 4px 0 0;
+  transition: height 0.3s ease;
+}
+
+.bar-value {
+  font-size: 14px;
+  font-weight: 500;
+  color: #262626;
+}
+
+/* 结构明细样式 */
+.structure-details {
+  border-top: 1px solid #F0F0F0;
+  padding-top: 16px;
+}
+
+.structure-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #F5F5F5;
+}
+
+.structure-item:last-child {
+  border-bottom: none;
+}
+
+.item-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.item-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #262626;
+}
+
+.item-percentage {
+  font-size: 14px;
+  color: #8C8C8C;
+}
+
+.item-amount {
+  font-size: 16px;
+  font-weight: 500;
+  color: #262626;
+}
+
+/* 设置页面特定样式 */
+
+/* 设置选项列表样式 */
+.settings-options {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+/* 设置选项样式 */
+.setting-option {
+  display: flex;
+  align-items: center;
+  padding: 20px 24px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid #F0F0F0;
+}
+
+.setting-option:hover {
+  box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+
+/* 设置选项图标样式 */
+.setting-option-icon {
+  font-size: 24px;
+  margin-right: 16px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 设置选项信息样式 */
+.setting-option-info {
+  flex: 1;
+  margin-right: 16px;
+}
+
+.setting-option-name {
+  margin: 0 0 4px 0;
+  font-size: 18px;
+  font-weight: 500;
+  color: #262626;
+}
+
+.setting-option-description {
+  margin: 0;
+  font-size: 14px;
+  color: #8C8C8C;
+}
+
+/* 设置选项箭头样式 */
+.setting-option-arrow {
+  font-size: 20px;
+  color: #D9D9D9;
+  font-weight: bold;
+}
+
 /* Today页面样式 */
 .today-page {
   display: flex;
@@ -510,45 +1161,30 @@ button.text:disabled {
 
 /* 响应式设计 */
 
-/* 移动端 (iPhone) - 375px */
-@media (max-width: 375px) {
-  .app-container {
-    flex-direction: column;
+/* 移动端 (<768px) */
+@media (max-width: 767px) {
+  /* 隐藏桌面端侧边导航 */
+  .desktop-side-nav {
+    display: none;
   }
   
-  .nav-bar {
-    padding: 12px 16px; /* 8的倍数 */
+  /* 显示移动端顶部导航 */
+  .mobile-tablet-header {
+    display: block;
   }
   
-  .app-title {
-    font-size: 18px; /* Heading/H5 */
-    line-height: 22px;
-  }
-  
-  .side-nav {
-    width: 100%;
+  /* 显示移动端底部导航 */
+  .mobile-bottom-nav {
     display: flex;
-    overflow-x: auto;
-    border-right: none;
-    border-bottom: 1px solid #F0F0F0; /* Neutral/200 */
-    padding: 0;
+    justify-content: space-around;
   }
   
-  .nav-link {
-    white-space: nowrap;
-    border-left: none;
-    border-bottom: 3px solid transparent;
-    padding: 12px 16px; /* 8的倍数 */
-  }
-  
-  .nav-link.active {
-    border-left: none;
-    border-bottom-color: #1890FF; /* Primary/600 */
-    background-color: transparent;
-  }
-  
+  /* 调整主内容区域 */
   .main-content {
+    margin-left: 0;
+    margin-top: 64px; /* 为顶部导航留出空间 */
     padding: 16px; /* 8的倍数 */
+    padding-bottom: 80px; /* 为底部导航留出空间 */
   }
   
   .page-header {
@@ -566,52 +1202,33 @@ button.text:disabled {
   .summary-cards-container {
     display: flex;
     flex-direction: column;
+    gap: 16px; /* 8的倍数 */
   }
   
-  /* 按钮在移动端的布局 */
+  /* 快速记录按钮在移动端的布局 */
   .quick-actions {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .quick-actions button {
-    margin-bottom: 8px; /* 8的倍数 */
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px; /* 8的倍数 */
   }
 }
 
-/* 平板端 (iPad) - 768px */
-@media (min-width: 376px) and (max-width: 1199px) {
-  .app-container {
-    flex-direction: column;
+/* 平板端 (768px-1199px) */
+@media (min-width: 768px) and (max-width: 1199px) {
+  /* 隐藏桌面端侧边导航 */
+  .desktop-side-nav {
+    display: none;
   }
   
-  .nav-bar {
-    padding: 16px 24px; /* 8的倍数 */
+  /* 显示平板端顶部导航 */
+  .mobile-tablet-header {
+    display: block;
   }
   
-  .side-nav {
-    width: 100%;
-    display: flex;
-    overflow-x: auto;
-    border-right: none;
-    border-bottom: 1px solid #F0F0F0; /* Neutral/200 */
-    padding: 0;
-  }
-  
-  .nav-link {
-    white-space: nowrap;
-    border-left: none;
-    border-bottom: 3px solid transparent;
-    padding: 12px 24px; /* 8的倍数 */
-  }
-  
-  .nav-link.active {
-    border-left: none;
-    border-bottom-color: #1890FF; /* Primary/600 */
-    background-color: transparent;
-  }
-  
+  /* 调整主内容区域 */
   .main-content {
+    margin-left: 0;
+    margin-top: 64px; /* 为顶部导航留出空间 */
     padding: 24px; /* 8的倍数 */
   }
   
@@ -622,20 +1239,30 @@ button.text:disabled {
     grid-gap: 16px; /* 8的倍数 */
   }
   
-  /* 按钮在平板端的布局 */
+  /* 快速记录按钮在平板端的布局 */
   .quick-actions {
     display: flex;
     flex-wrap: wrap;
-  }
-  
-  .quick-actions button {
-    margin-right: 8px; /* 8的倍数 */
-    margin-bottom: 8px; /* 8的倍数 */
+    gap: 16px; /* 8的倍数 */
   }
 }
 
 /* 桌面端 (≥1200px) */
 @media (min-width: 1200px) {
+  /* 显示桌面端侧边导航 */
+  .desktop-side-nav {
+    display: flex;
+  }
+  
+  /* 隐藏移动端和平板端导航 */
+  .mobile-tablet-header {
+    display: none;
+  }
+  
+  .mobile-bottom-nav {
+    display: none;
+  }
+  
   /* 统计卡片在桌面端的布局 */
   .summary-cards-container {
     display: grid;
@@ -643,21 +1270,18 @@ button.text:disabled {
     grid-gap: 24px; /* 8的倍数 */
   }
   
-  /* 按钮在桌面端的布局 */
+  /* 快速记录按钮在桌面端的布局 */
   .quick-actions {
     display: flex;
-  }
-  
-  .quick-actions button {
-    margin-right: 16px; /* 8的倍数 */
+    gap: 16px; /* 8的倍数 */
   }
 }
 
 /* 大屏幕 (≥1600px) */
 @media (min-width: 1600px) {
-  .app-container {
-    max-width: 1600px;
-    margin: 0 auto;
+  .main-content {
+    max-width: 1400px;
+    margin-left: 200px;
   }
 }
 
@@ -676,46 +1300,129 @@ button.text:disabled {
   to { transform: rotate(360deg); }
 }
 
-/* Today页面特定响应式样式 */
+/* Today页面特定样式 */
+
+/* 日期选择器样式 */
+.date-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding: 16px 24px;
+}
+
+.date-selector {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.date-selector button {
+  margin: 0;
+}
+
+.selected-date {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+/* 快速记录按钮样式 */
+.quick-actions-section {
+  margin-bottom: 32px;
+}
+
+.quick-action-btn {
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  border: none;
+  background-color: #FFFFFF;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 4px;
+}
+
+.quick-action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.quick-action-btn h4 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: #262626;
+}
+
+/* 记录列表项样式优化 */
+.record-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 1px solid #F5F5F5;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+}
+
+.record-item:hover {
+  background-color: #F5F5F5;
+}
+
+.record-content {
+  flex: 1;
+}
+
+.record-content h4 {
+  margin: 0 0 4px 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: #262626;
+}
+
+.record-amount {
+  margin: 0 16px;
+}
+
+.record-status {
+  margin-left: auto;
+}
+
+/* Today页面响应式样式 */
 
 /* 移动端 */
-@media (max-width: 375px) {
+@media (max-width: 767px) {
   .date-section {
     flex-direction: column;
     align-items: flex-start;
     gap: 16px;
   }
   
-  .date-nav {
+  .date-selector {
     display: flex;
     gap: 8px;
     width: 100%;
   }
   
-  .date-nav button {
+  .date-selector button {
     flex: 1;
-    margin-left: 0;
   }
   
-  .actions-section {
-    flex-direction: column;
-    gap: 12px;
-  }
-  
-  .action-btn {
-    flex: 1;
+  .selected-date {
+    font-size: 18px;
   }
 }
 
 /* 平板端 */
-@media (min-width: 376px) and (max-width: 1199px) {
-  .actions-section {
-    flex-wrap: wrap;
-  }
-  
-  .action-btn {
-    flex: 1;
-    min-width: 150px;
+@media (min-width: 768px) and (max-width: 1199px) {
+  .quick-actions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
   }
 }
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, NavLink } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, NavLink } from 'react-router-dom';
 import './App.css';
 
 // 导入页面组件
@@ -23,6 +23,65 @@ import ReservationManagement from './pages/admin/ReservationManagement';
 import MemberManagement from './pages/admin/MemberManagement';
 import CashbackConfig from './pages/admin/CashbackConfig';
 
+// 主应用布局组件
+const MainLayout = ({ children }) => {
+  return (
+    <div className="main-app-layout">
+      {/* 桌面端侧边导航 */}
+      <aside className="desktop-side-nav">
+        <div className="side-nav-header">
+          <h1 className="app-title">Dot-Store</h1>
+        </div>
+        <nav className="side-nav-menu">
+          <NavLink to="/" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'} end>
+            今日
+          </NavLink>
+          <NavLink to="/record" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+            记录
+          </NavLink>
+          <NavLink to="/ledger" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+            账本
+          </NavLink>
+          <NavLink to="/report" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+            报表
+          </NavLink>
+          <NavLink to="/setting" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+            设置
+          </NavLink>
+        </nav>
+      </aside>
+      
+      {/* 平板端和移动端顶部导航 */}
+      <header className="mobile-tablet-header">
+        <h1 className="app-title">Dot-Store</h1>
+      </header>
+      
+      {/* 主内容区域 */}
+      <main className="main-content">
+        {children}
+      </main>
+      
+      {/* 移动端底部导航 */}
+      <nav className="mobile-bottom-nav">
+        <NavLink to="/" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'} end>
+          今日
+        </NavLink>
+        <NavLink to="/record" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+          记录
+        </NavLink>
+        <NavLink to="/ledger" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+          账本
+        </NavLink>
+        <NavLink to="/report" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+          报表
+        </NavLink>
+        <NavLink to="/setting" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+          设置
+        </NavLink>
+      </nav>
+    </div>
+  );
+};
 
 function App() {
   return (
@@ -105,46 +164,17 @@ function App() {
             </div>
           } />
           
-          {/* 原有页面路由 */}
+          {/* 原有页面路由 - 使用新的主布局 */}
           <Route path="/*" element={
-            <div className="original-layout">
-              {/* 顶部导航栏 */}
-              <nav className="nav-bar">
-                <h1 className="app-title">Dot-Store</h1>
-              </nav>
-              
-              <div className="app-container">
-                {/* 左侧导航菜单 */}
-                <aside className="side-nav">
-                  <NavLink to="/" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'} end>
-                    今日
-                  </NavLink>
-                  <NavLink to="/record" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
-                    记录
-                  </NavLink>
-                  <NavLink to="/ledger" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
-                    账本
-                  </NavLink>
-                  <NavLink to="/report" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
-                    报表
-                  </NavLink>
-                  <NavLink to="/setting" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
-                    设置
-                  </NavLink>
-                </aside>
-                
-                {/* 主内容区域 */}
-                <main className="main-content">
-                  <Routes>
-                    <Route path="/" element={<Today />} />
-                    <Route path="/record" element={<Record />} />
-                    <Route path="/ledger" element={<Ledger />} />
-                    <Route path="/report" element={<Report />} />
-                    <Route path="/setting" element={<Setting />} />
-                  </Routes>
-                </main>
-              </div>
-            </div>
+            <MainLayout>
+              <Routes>
+                <Route path="/" element={<Today />} />
+                <Route path="/record" element={<Record />} />
+                <Route path="/ledger" element={<Ledger />} />
+                <Route path="/report" element={<Report />} />
+                <Route path="/setting" element={<Setting />} />
+              </Routes>
+            </MainLayout>
           } />
         </Routes>
       </div>
