@@ -61,23 +61,51 @@ Dot-Store 的核心目标不是：
 
 ```
 Dot-Store/
-├── apps/              # 应用目录
-│   ├── api-server/    # 后端 API 服务
-│   └── frontend/      # 前端应用
-├── modules/           # 核心模块
-│   ├── event/         # 事件模块
-│   ├── order/         # 订单模块
-│   ├── ledger/        # 账务模块
-│   ├── report/        # 报表模块
-│   ├── audit/         # 审计模块
-│   └── config/        # 配置模块
-├── shared/            # 共享组件
-│   ├── db/            # 数据库相关
-│   └── utils/         # 工具函数
-├── .env               # 环境变量配置
-├── docker-compose.yml # Docker 配置
-└── DEPLOYMENT.md      # 部署文档
+├── apps/                  # 应用目录
+│   ├── api-server/        # 后端 API 服务
+│   │   ├── alembic/       # 数据库迁移
+│   │   ├── kernel/        # 核心业务层
+│   │   │   ├── models/    # 数据模型
+│   │   │   └── services/  # 业务服务
+│   │   ├── platforms/     # 行业应用层
+│   │   │   ├── models/    # 行业模型
+│   │   │   └── services/  # 行业服务
+│   │   ├── script/        # 门店定制层
+│   │   │   └── routes/    # API 路由
+│   │   ├── shared/        # 共享组件
+│   │   │   └── db/        # 数据库相关
+│   │   ├── Dockerfile     # API 服务 Docker 配置
+│   │   └── main.py        # 应用入口
+│   └── frontend/          # 前端应用
+├── .env                   # 环境变量配置
+├── deploy.sh              # 部署脚本
+├── docker-compose.yml     # Docker Compose 配置
+└── README.md              # 项目说明文档
 ```
+
+### 三层架构说明
+
+1. **Kernel 层** - 提供可复用的商业原子能力
+   - 包含 Resource、ResourceEvent、Account+Auth、Ledger、Audit Log 等核心模型和服务
+   - 专注于基础商业逻辑，不依赖具体行业
+
+2. **Platforms 层** - 固化行业共识
+   - 实现 Table/Booth、Reservation Service、Member/Shareholder、CashbackPolicy 等行业特定功能
+   - 基于 Kernel 层构建，为特定行业提供标准化解决方案
+
+3. **Script 层** - 提供门店定制能力
+   - 包含 API 路由定义，处理 HTTP 请求
+   - 支持快速定制和试错，便于门店根据实际需求调整
+
+### 目录职责
+
+| 目录 | 职责 |
+|------|------|
+| kernel/ | 核心业务能力层，提供可复用的商业原子能力 |
+| platforms/ | 行业应用层，实现行业特定业务逻辑 |
+| script/ | 门店定制层，处理 HTTP 请求和路由 |
+| shared/ | 共享组件，提供跨层通用功能 |
+| alembic/ | 数据库迁移管理 |
 
 ## API 文档
 

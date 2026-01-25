@@ -20,19 +20,18 @@ WORKDIR /app
 COPY --from=build-stage /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
 COPY --from=build-stage /usr/local/bin /usr/local/bin
 
-# 创建正确的目录结构
-RUN mkdir -p ./apps/api_server/models ./apps/api_server/routes
-
 # 复制应用代码（仅复制必要的文件）
-COPY ./apps/api-server/main.py ./apps/api_server/
-COPY ./apps/api-server/models ./apps/api_server/models/
-COPY ./apps/api-server/routes ./apps/api_server/routes/
-COPY ./alembic ./alembic/
-COPY ./alembic.ini .
+COPY ./apps/api-server/main.py ./apps/api-server/
+COPY ./apps/api-server/alembic ./alembic/
+COPY ./apps/api-server/alembic.ini .
 
-# 复制共享组件
-COPY ./shared ./shared/
-COPY ./modules ./modules/
+# 复制新的目录结构（已迁移到apps/api-server下）
+COPY ./apps/api-server/kernel ./kernel/
+COPY ./apps/api-server/platforms ./platforms/
+COPY ./apps/api-server/script ./script/
+
+# 复制共享组件（已迁移到apps/api-server下）
+COPY ./apps/api-server/shared ./shared/
 
 # 暴露端口
 EXPOSE 8000

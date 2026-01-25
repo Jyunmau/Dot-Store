@@ -32,8 +32,8 @@ def read_root():
 def health_check():
     return {"status": "healthy"}
 
-# 导入路由（使用相对导入）
-from routes import api_router
+# 导入路由（使用新的script层路径）
+from .script.routes import api_router
 
 # 注册 API 路由
 app.include_router(api_router, prefix="/api")

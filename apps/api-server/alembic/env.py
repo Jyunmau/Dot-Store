@@ -1,7 +1,7 @@
 import sys
 import os
 
-# 添加当前目录到 Python 路径，确保可以导入 models 模块
+# 添加当前目录到 Python 路径，确保可以导入新的目录结构
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from logging.config import fileConfig
@@ -12,13 +12,20 @@ from sqlalchemy import pool
 from alembic import context
 
 # 导入模型基类和所有模型
-from models.base import Base
-from models.shop import Shop
-from models.event import Event
-from models.order import Order, OrderEvent
-from models.ledger import LedgerAccount, LedgerEntry
-from models.audit import AuditLog
-from models.config import Config
+from .kernel.models.base import Base
+from .kernel.models.event import Event
+from .kernel.models.ledger import LedgerAccount, LedgerEntry
+from .kernel.models.audit import AuditLog
+from .kernel.models.config import Config
+from .kernel.models.resource import Resource
+from .kernel.models.account import Account
+
+# 导入platforms层的模型
+from .platforms.models.order import Order, OrderEvent
+from .platforms.models.table import Table, TableGroup
+from .platforms.models.reservation import Reservation
+from .platforms.models.member import Member
+from .platforms.models.cashback import CashbackPolicy, CashbackRedemption
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
