@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Outlet } from 'react-router-dom';
 
 const Setting = () => {
   const navigate = useNavigate();
@@ -67,6 +67,9 @@ const Setting = () => {
           </div>
         ))}
       </div>
+      
+      {/* 子页面内容区域 */}
+      <Outlet />
     </div>
   );
 };

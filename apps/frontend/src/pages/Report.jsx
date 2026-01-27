@@ -20,8 +20,50 @@ const Report = () => {
       // 模拟 shop_id，实际应该从登录状态或上下文获取
       const shopId = 1;
       
-      // 根据日期范围获取报表数据
-      // 这里使用模拟数据，实际应该调用API获取
+      // 准备日期参数
+      const dateParams = {
+        date_range: dateRange,
+        start_date: customDates.startDate || null,
+        end_date: customDates.endDate || null
+      };
+      
+      // 获取收入结构数据
+      const incomeStructureData = await api.report.incomeStructure(shopId, dateParams);
+      // 转换数据格式
+      const incomeItems = Object.entries(incomeStructureData.income_structure).map(([account_id, amount]) => {
+        return { name: `账户${account_id}`, amount: amount || 0, percentage: 0 };
+      });
+      // 计算百分比
+      const totalIncome = incomeItems.reduce((sum, item) => sum + item.amount, 0);
+      const formattedIncomeStructure = incomeItems.map(item => {
+        return {
+          ...item,
+          percentage: totalIncome > 0 ? Math.round((item.amount / totalIncome) * 100) : 0
+        };
+      });
+      setIncomeStructure(formattedIncomeStructure);
+      
+      // 获取成本结构数据
+      const expenseStructureData = await api.report.expenseStructure(shopId, dateParams);
+      // 转换数据格式
+      const costItems = Object.entries(expenseStructureData.expense_structure).map(([account_id, amount]) => {
+        return { name: `账户${account_id}`, amount: amount || 0, percentage: 0 };
+      });
+      // 计算百分比
+      const totalCost = costItems.reduce((sum, item) => sum + item.amount, 0);
+      const formattedCostStructure = costItems.map(item => {
+        return {
+          ...item,
+          percentage: totalCost > 0 ? Math.round((item.amount / totalCost) * 100) : 0
+        };
+      });
+      setCostStructure(formattedCostStructure);
+      
+      setError(null);
+    } catch (err) {
+      console.error('获取报表数据失败:', err);
+      setError('获取报表数据失败，请稍后重试');
+      // 使用模拟数据作为备份
       setIncomeStructure([
         { name: '餐饮订单', amount: 1234, percentage: 60 },
         { name: '外卖订单', amount: 567, percentage: 28 },
@@ -34,11 +76,6 @@ const Report = () => {
         { name: '人员工资', amount: 123, percentage: 11 },
         { name: '其他成本', amount: 200, percentage: 18 }
       ]);
-      
-      setError(null);
-    } catch (err) {
-      console.error('获取报表数据失败:', err);
-      setError('获取报表数据失败，请稍后重试');
     } finally {
       setLoading(false);
     }
@@ -47,9 +84,7 @@ const Report = () => {
   // 切换日期范围
   const handleDateRangeChange = (range) => {
     setDateRange(range);
-    if (range !== 'custom') {
-      fetchReportData();
-    }
+    fetchReportData();
   };
 
   // 自定义日期变化处理
@@ -73,7 +108,7 @@ const Report = () => {
 
   useEffect(() => {
     fetchReportData();
-  }, []);
+  }, [dateRange, customDates.startDate, customDates.endDate]);
 
   return (
     <div className="report-page">

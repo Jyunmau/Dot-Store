@@ -8,6 +8,11 @@ import Record from './pages/Record';
 import Ledger from './pages/Ledger';
 import Report from './pages/Report';
 import Setting from './pages/Setting';
+// 导入设置页面的子页面组件
+import AccountCategories from './pages/setting/AccountCategories';
+import Tags from './pages/setting/Tags';
+import BusinessTypes from './pages/setting/BusinessTypes';
+import AccountSettings from './pages/setting/AccountSettings';
 // 会员端页面组件
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -172,7 +177,12 @@ function App() {
                 <Route path="/record" element={<Record />} />
                 <Route path="/ledger" element={<Ledger />} />
                 <Route path="/report" element={<Report />} />
-                <Route path="/setting" element={<Setting />} />
+                <Route path="/setting" element={<Setting />}>
+                  <Route path="account-categories" element={<AccountCategories />} />
+                  <Route path="tags" element={<Tags />} />
+                  <Route path="business-types" element={<BusinessTypes />} />
+                  <Route path="account-settings" element={<AccountSettings />} />
+                </Route>
               </Routes>
             </MainLayout>
           } />

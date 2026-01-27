@@ -10,7 +10,7 @@ class Order(Base):
     shop_id = Column(Integer, nullable=False, index=True)
     # 基础订单状态流转：recorded → confirmed → paid → completed → cancelled
     status = Column(String(32), default="recorded")
-    amount_estimate = Column(Integer, nullable=True)  # 使用整数存储分
+    amount_estimate = Column(Integer, default=0, nullable=False)  # 使用整数存储分，默认值0
     amount_actual = Column(Integer, nullable=True)  # 实际支付金额，使用整数存储分
     currency = Column(String(16), default="CNY")  # 货币类型
     tags = Column(JSON)  # 订单标签

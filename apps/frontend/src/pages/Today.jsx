@@ -14,6 +14,40 @@ const Today = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const navigate = useNavigate();
   
+  // 从订单列表计算收入、支出和盈亏
+  const calculateSummary = (records) => {
+    let totalIncome = 0;
+    let totalExpense = 0;
+    
+    // 遍历记录，计算收入和支出
+    records.forEach(record => {
+      const amount = record.amount_estimate || record.amount || 0;
+      
+      // 根据记录的tags或metadata来判断是收入还是支出
+      // 如果tags中包含"支出"，或者metadata的note中包含"支出"，则视为支出
+      const isExpense = 
+        record.tags?.includes('支出') || 
+        (record.metadata?.note && record.metadata.note.includes('支出'));
+      
+      if (isExpense) {
+        // 支出记录
+        totalExpense += amount;
+      } else {
+        // 收入记录
+        totalIncome += amount;
+      }
+    });
+    
+    // 计算盈亏
+    const netProfit = totalIncome - totalExpense;
+    
+    return {
+      total_income: totalIncome,
+      total_expense: totalExpense,
+      net_profit: netProfit
+    };
+  };
+
   // 获取数据
   const fetchData = async () => {
     try {
@@ -23,17 +57,37 @@ const Today = () => {
       const shopId = 1;
       const date = selectedDate.toISOString().split('T')[0];
       
-      // 获取汇总数据
-      const summaryData = await api.report.summary(shopId, date);
-      setSummary({
-        total_income: summaryData.total_income,
-        total_expense: summaryData.total_expense,
-        net_profit: summaryData.net_profit
+      // 获取记录列表
+      let recordsData = [];
+      try {
+        recordsData = await api.order.list(shopId);
+      } catch (err) {
+        console.error('获取记录列表失败:', err);
+      }
+      
+      // 处理recordsData，确保amount_estimate字段有值
+      const processedRecords = recordsData.map(record => {
+        // 使用record.amount作为备选，因为前端传递的是amount字段
+        // 但后端返回时使用的是amount_estimate字段
+        return {
+          ...record,
+          // 优先使用record.amount_estimate，如果没有则使用record.amount，如果都没有则使用0
+          amount_estimate: (record.amount_estimate || record.amount || 0) 
+        };
       });
       
-      // 获取记录列表
-      const recordsData = await api.order.list(shopId);
-      setRecords(recordsData);
+      // 筛选出选定日期的记录
+      const selectedDateRecords = processedRecords.filter(record => {
+        const recordDate = new Date(record.created_at).toISOString().split('T')[0];
+        return recordDate === date;
+      });
+      
+      // 从选定日期的订单列表计算收入、支出和盈亏
+      const summary = calculateSummary(selectedDateRecords);
+      setSummary(summary);
+      
+      // 只显示选定日期的记录
+      setRecords(selectedDateRecords);
       
       setError(null);
     } catch (err) {
@@ -164,9 +218,17 @@ const Today = () => {
                       </p>
                     </div>
                     <div className="record-amount">
-                      <p className={`amount ${record.type === 'income' ? 'income' : 'expense'}`}>
-                        {record.type === 'income' ? '+' : '-'}{'¥'}{Math.abs(record.amount).toFixed(2)}
-                      </p>
+                      {/* 根据记录的tags或metadata来判断是收入还是支出 */}
+                      {/* 如果tags中包含"支出"，或者metadata的note中包含"支出"，则视为支出 */}
+                      {(record.tags?.includes('支出') || (record.metadata?.note && record.metadata.note.includes('支出'))) ? (
+                        <p className="amount expense">
+                          {'-'}{'¥'}{(record.amount_estimate || 0).toFixed(2)}
+                        </p>
+                      ) : (
+                        <p className="amount income">
+                          {'+'}{'¥'}{(record.amount_estimate || 0).toFixed(2)}
+                        </p>
+                      )}
                     </div>
                     <div className={`record-status ${record.status === 'recorded' ? 'completed' : 'pending'}`}>
                       {record.status === 'recorded' ? '已完成' : '待补充'}

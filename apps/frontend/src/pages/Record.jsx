@@ -19,8 +19,18 @@ const Record = () => {
   // 从URL状态中获取记录类型
   useEffect(() => {
     if (location.state?.type) {
-      setRecordType(location.state.type);
-      setFormData(prev => ({ ...prev, type: location.state.type }));
+      const type = location.state.type;
+      setRecordType(type);
+      
+      // 根据记录类型自动设置标签
+      let tags = [];
+      if (type === 'expense') {
+        tags = ['支出'];
+      } else if (type === 'income') {
+        tags = ['收入'];
+      }
+      
+      setFormData(prev => ({ ...prev, type, tags }));
     }
   }, [location.state?.type]);
 
@@ -45,7 +55,16 @@ const Record = () => {
   // 记录类型选择处理
   const handleTypeChange = (type) => {
     setRecordType(type);
-    setFormData(prev => ({ ...prev, type }));
+    
+    // 根据记录类型自动设置标签
+    let tags = [];
+    if (type === 'expense') {
+      tags = ['支出'];
+    } else if (type === 'income') {
+      tags = ['收入'];
+    }
+    
+    setFormData(prev => ({ ...prev, type, tags }));
   };
 
   // 表单提交处理

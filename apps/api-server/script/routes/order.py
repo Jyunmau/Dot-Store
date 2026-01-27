@@ -12,13 +12,28 @@ router = APIRouter()
 def create_order(order_data: dict, db: Session = Depends(get_db)):
     """创建订单"""
     try:
+        # 从order_data中获取必填字段
+        shop_id = order_data["shop_id"]  # shop_id是必填字段，直接获取
+        
+        # 获取金额字段，兼容前端传递的amount和后端使用的amount_estimate
+        # 注意：前端传递的是元，后端需要转换为分存储
+        amount = order_data.get("amount")
+        amount_estimate = order_data.get("amount_estimate")
+        
+        # 确定最终金额，优先使用amount字段
+        final_amount = 0
+        if amount is not None:
+            final_amount = int(float(amount) * 100)  # 转换为分存储
+        elif amount_estimate is not None:
+            final_amount = int(float(amount_estimate) * 100)  # 转换为分存储
+        
         # 创建订单对象
         order = Order(
-            shop_id=order_data.get("shop_id"),
+            shop_id=shop_id,
             status=order_data.get("status", "recorded"),
-            amount_estimate=order_data.get("amount_estimate"),
-            tags=order_data.get("tags"),
-            metadata_=order_data.get("metadata")
+            amount_estimate=final_amount,
+            tags=order_data.get("tags", []),
+            metadata_=order_data.get("metadata", {})
         )
         
         # 保存到数据库
@@ -26,7 +41,12 @@ def create_order(order_data: dict, db: Session = Depends(get_db)):
         db.commit()
         db.refresh(order)
         
-        return {"id": order.id, "message": "订单创建成功"}
+        # 返回创建的订单信息，包括金额
+        return {
+            "id": order.id, 
+            "message": "订单创建成功",
+            "amount_estimate": final_amount / 100.0  # 返回元为单位的金额
+        }
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=f"创建订单失败: {str(e)}")
@@ -42,9 +62,9 @@ def get_order(order_id: int, db: Session = Depends(get_db)):
         "id": order.id,
         "shop_id": order.shop_id,
         "status": order.status,
-        "amount_estimate": order.amount_estimate,
-        "tags": order.tags,
-        "metadata": order.metadata_,
+        "amount_estimate": (order.amount_estimate or 0) / 100.0,  # 处理null值并转换为元返回
+        "tags": order.tags or [],
+        "metadata": order.metadata_ or {},
         "created_at": order.created_at,
         "updated_at": order.updated_at
     }
@@ -60,8 +80,11 @@ def update_order(order_id: int, order_data: dict, db: Session = Depends(get_db))
         # 更新订单字段
         if "status" in order_data:
             order.status = order_data["status"]
+        # 兼容amount和amount_estimate字段，并转换为整数分
         if "amount_estimate" in order_data:
-            order.amount_estimate = order_data["amount_estimate"]
+            order.amount_estimate = int(float(order_data["amount_estimate"]) * 100)  # 转换为分
+        elif "amount" in order_data:
+            order.amount_estimate = int(float(order_data["amount"]) * 100)  # 转换为分
         if "tags" in order_data:
             order.tags = order_data["tags"]
         if "metadata" in order_data:
@@ -84,9 +107,9 @@ def get_orders(shop_id: int, db: Session = Depends(get_db)):
         "id": order.id,
         "shop_id": order.shop_id,
         "status": order.status,
-        "amount_estimate": order.amount_estimate,
-        "tags": order.tags,
-        "metadata": order.metadata_,
+        "amount_estimate": (order.amount_estimate or 0) / 100.0,  # 处理null值并转换为元返回
+        "tags": order.tags or [],
+        "metadata": order.metadata_ or {},
         "created_at": order.created_at,
         "updated_at": order.updated_at
     } for order in orders]

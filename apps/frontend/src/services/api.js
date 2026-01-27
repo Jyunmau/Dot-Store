@@ -68,19 +68,34 @@ const api = {
   
   // 报表相关 API
   report: {
-    summary: (shopId, date) => {
+    summary: (shopId, dateParams) => {
       const params = new URLSearchParams({ shop_id: shopId });
-      if (date) params.append('date', date);
+      if (dateParams) {
+        if (dateParams.date) params.append('date', dateParams.date);
+        if (dateParams.date_range) params.append('date_range', dateParams.date_range);
+        if (dateParams.start_date) params.append('start_date', dateParams.start_date);
+        if (dateParams.end_date) params.append('end_date', dateParams.end_date);
+      }
       return fetchAPI(`/reports/summary?${params.toString()}`);
     },
-    incomeStructure: (shopId, date) => {
+    incomeStructure: (shopId, dateParams) => {
       const params = new URLSearchParams({ shop_id: shopId });
-      if (date) params.append('date', date);
+      if (dateParams) {
+        if (dateParams.date) params.append('date', dateParams.date);
+        if (dateParams.date_range) params.append('date_range', dateParams.date_range);
+        if (dateParams.start_date) params.append('start_date', dateParams.start_date);
+        if (dateParams.end_date) params.append('end_date', dateParams.end_date);
+      }
       return fetchAPI(`/reports/income-structure?${params.toString()}`);
     },
-    expenseStructure: (shopId, date) => {
+    expenseStructure: (shopId, dateParams) => {
       const params = new URLSearchParams({ shop_id: shopId });
-      if (date) params.append('date', date);
+      if (dateParams) {
+        if (dateParams.date) params.append('date', dateParams.date);
+        if (dateParams.date_range) params.append('date_range', dateParams.date_range);
+        if (dateParams.start_date) params.append('start_date', dateParams.start_date);
+        if (dateParams.end_date) params.append('end_date', dateParams.end_date);
+      }
       return fetchAPI(`/reports/expense-structure?${params.toString()}`);
     },
   },
