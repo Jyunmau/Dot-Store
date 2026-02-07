@@ -2,8 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
 
-from ...kernel.models.ledger import LedgerAccount, LedgerEntry
-from ...shared.db.database import get_db
+from kernel.models.ledger import LedgerAccount, LedgerEntry
+from shared.db.database import get_db
 
 # 创建账务路由
 router = APIRouter()

@@ -9,66 +9,87 @@ const Tags = () => {
     name: '',
     description: ''
   });
-  
+
+  const SHOP_ID = 1;
+  const CONFIG_KEY = 'available_tags';
+
   // 获取标签列表
   const fetchTags = async () => {
     try {
       setLoading(true);
-      // 模拟数据，实际应该调用API获取
-      setTags([
-        { id: 1, name: '堂食', description: '堂食订单标签' },
-        { id: 2, name: '外卖', description: '外卖订单标签' },
-        { id: 3, name: '新品', description: '新品促销标签' },
-        { id: 4, name: '活动', description: '活动促销标签' }
-      ]);
       setError(null);
+
+      const response = await api.config.get(SHOP_ID, CONFIG_KEY);
+      if (response && response.value) {
+        setTags(JSON.parse(response.value));
+      } else {
+        // 初始默认数据
+        const defaults = [
+          { id: 1, name: '堂食', description: '店内用餐' },
+          { id: 2, name: '外卖', description: '外送平台' },
+          { id: 3, name: '活动', description: '营销活动相关' },
+          { id: 4, name: '支出', description: '标志性支出' }
+        ];
+        setTags(defaults);
+      }
     } catch (err) {
-      console.error('获取标签失败:', err);
-      setError('获取标签失败，请稍后重试');
+      if (err.status === 404) {
+        setTags([
+          { id: 1, name: '堂食', description: '店内用餐' },
+          { id: 2, name: '外卖', description: '外送平台' }
+        ]);
+      } else {
+        console.error('获取标签失败:', err);
+        setError('获取标签失败，请稍后重试');
+      }
     } finally {
       setLoading(false);
     }
   };
-  
+
+  // 保存到后端
+  const saveToBackend = async (data) => {
+    try {
+      await api.config.create({
+        shop_id: SHOP_ID,
+        key: CONFIG_KEY,
+        value: JSON.stringify(data)
+      });
+    } catch (err) {
+      console.error('更新标签到后端失败:', err);
+      setError('保存失败，请检查网络');
+    }
+  };
+
   // 添加新标签
   const addTag = async (e) => {
     e.preventDefault();
-    try {
-      // 模拟添加，实际应该调用API
-      const newId = tags.length + 1;
-      setTags([...tags, { ...newTag, id: newId }]);
-      // 重置表单
-      setNewTag({
-        name: '',
-        description: ''
-      });
-    } catch (err) {
-      console.error('添加标签失败:', err);
-      setError('添加标签失败，请稍后重试');
-    }
+    if (!newTag.name.trim()) return;
+
+    const newList = [...tags, { ...newTag, id: Date.now() }];
+    setTags(newList);
+    await saveToBackend(newList);
+
+    setNewTag({ name: '', description: '' });
   };
-  
+
   // 删除标签
   const deleteTag = async (id) => {
-    try {
-      // 模拟删除，实际应该调用API
-      setTags(tags.filter(tag => tag.id !== id));
-    } catch (err) {
-      console.error('删除标签失败:', err);
-      setError('删除标签失败，请稍后重试');
-    }
+    const newList = tags.filter(tag => tag.id !== id);
+    setTags(newList);
+    await saveToBackend(newList);
   };
-  
+
   useEffect(() => {
     fetchTags();
   }, []);
-  
+
   return (
     <div className="tags-page">
       <div className="page-header">
         <h1>标签管理</h1>
       </div>
-      
+
       {/* 添加标签表单 */}
       <div className="card level1 add-tag-form">
         <h2>添加新标签</h2>
@@ -95,22 +116,21 @@ const Tags = () => {
             />
           </div>
           <div className="form-actions">
-            <button type="submit" className="primary">添加标签</button>
+            <button type="submit" className="primary" disabled={loading}>
+              {loading ? '保存中...' : '添加标签'}
+            </button>
           </div>
         </form>
       </div>
-      
+
       {/* 标签列表 */}
       <div className="card level1 tags-list">
         <h2>标签列表</h2>
-        {loading ? (
+        {error && <div className="error-message" style={{ marginBottom: '1rem' }}>{error}</div>}
+
+        {loading && tags.length === 0 ? (
           <div className="loading-container">
             <div className="loading"></div>
-          </div>
-        ) : error ? (
-          <div className="error-message">
-            <p>{error}</p>
-            <button className="primary" onClick={fetchTags}>重试</button>
           </div>
         ) : tags.length > 0 ? (
           <div className="tags-grid">
@@ -121,7 +141,6 @@ const Tags = () => {
                   <p className="tag-description">{tag.description}</p>
                 </div>
                 <div className="tag-actions">
-                  <button className="text" onClick={() => console.log('编辑标签:', tag.id)}>编辑</button>
                   <button className="text danger" onClick={() => deleteTag(tag.id)}>删除</button>
                 </div>
               </div>

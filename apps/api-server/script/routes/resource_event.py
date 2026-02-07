@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException, Body
 from sqlalchemy.orm import Session
 from typing import List
 
-from ...kernel.models.event import Event
-from ...kernel.models.resource import Resource
-from ...shared.db.database import get_db
+from kernel.models.event import Event
+from kernel.models.resource import Resource
+from shared.db.database import get_db
 
 # 创建资源事件路由
 router = APIRouter()

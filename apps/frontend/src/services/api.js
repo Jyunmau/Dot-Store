@@ -1,10 +1,10 @@
 // API 基础配置
-const API_BASE_URL = 'http://localhost:8000/api';
+const API_BASE_URL = 'http://127.0.0.1:8000/api';
 
 // 封装 fetch API 调用
 async function fetchAPI(endpoint, options = {}) {
   const url = `${API_BASE_URL}${endpoint}`;
-  
+
   // 默认选项
   const defaultOptions = {
     headers: {
@@ -12,15 +12,15 @@ async function fetchAPI(endpoint, options = {}) {
     },
     ...options,
   };
-  
+
   try {
     const response = await fetch(url, defaultOptions);
-    
+
     // 检查响应状态
     if (!response.ok) {
       throw new Error(`API 请求失败: ${response.status} ${response.statusText}`);
     }
-    
+
     // 解析响应数据
     return await response.json();
   } catch (error) {
@@ -42,9 +42,12 @@ const api = {
       method: 'PUT',
       body: JSON.stringify(orderData),
     }),
+    delete: (orderId) => fetchAPI(`/orders/${orderId}`, {
+      method: 'DELETE',
+    }),
     list: (shopId) => fetchAPI(`/orders?shop_id=${shopId}`),
   },
-  
+
   // 账务相关 API
   ledger: {
     // 分类账 API
@@ -55,7 +58,7 @@ const api = {
       }),
       list: (shopId) => fetchAPI(`/ledger/accounts?shop_id=${shopId}`),
     },
-    
+
     // 账务分录 API
     entry: {
       create: (entryData) => fetchAPI('/ledger/entries', {
@@ -65,7 +68,7 @@ const api = {
       list: (shopId) => fetchAPI(`/ledger/entries?shop_id=${shopId}`),
     },
   },
-  
+
   // 报表相关 API
   report: {
     summary: (shopId, dateParams) => {
@@ -99,7 +102,7 @@ const api = {
       return fetchAPI(`/reports/expense-structure?${params.toString()}`);
     },
   },
-  
+
   // 配置相关 API
   config: {
     create: (configData) => fetchAPI('/config', {
@@ -109,7 +112,7 @@ const api = {
     list: (shopId) => fetchAPI(`/config?shop_id=${shopId}`),
     get: (shopId, key) => fetchAPI(`/config/${key}?shop_id=${shopId}`),
   },
-  
+
   // 新增：资源事件相关 API
   resourceEvent: {
     create: (eventData) => fetchAPI('/resource-events', {

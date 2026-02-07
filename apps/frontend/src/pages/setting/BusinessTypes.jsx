@@ -9,66 +9,88 @@ const BusinessTypes = () => {
     name: '',
     description: ''
   });
-  
+
+  const SHOP_ID = 1;
+  const CONFIG_KEY = 'business_types';
+
   // 获取业务类型列表
   const fetchBusinessTypes = async () => {
     try {
       setLoading(true);
-      // 模拟数据，实际应该调用API获取
-      setBusinessTypes([
-        { id: 1, name: '餐饮订单', description: '堂食和外卖订单' },
-        { id: 2, name: '食材采购', description: '食材和原料采购' },
-        { id: 3, name: '设备维护', description: '设备维修和维护' },
-        { id: 4, name: '人员工资', description: '员工工资和福利' }
-      ]);
       setError(null);
+
+      const response = await api.config.get(SHOP_ID, CONFIG_KEY);
+      if (response && response.value) {
+        setBusinessTypes(JSON.parse(response.value));
+      } else {
+        // 初始默认数据
+        const defaults = [
+          { id: 1, name: '堂食', description: '店内用餐订单' },
+          { id: 2, name: '外卖', description: '外卖平台订单' },
+          { id: 3, name: '食材采购', description: '原料与进货' },
+          { id: 4, name: '房租水电', description: '固定运营支出' }
+        ];
+        setBusinessTypes(defaults);
+      }
     } catch (err) {
-      console.error('获取业务类型失败:', err);
-      setError('获取业务类型失败，请稍后重试');
+      if (err.status === 404) {
+        // 配置不存在，使用默认值
+        setBusinessTypes([
+          { id: 1, name: '堂食', description: '店内用餐订单' },
+          { id: 2, name: '外卖', description: '外卖平台订单' }
+        ]);
+      } else {
+        console.error('获取业务类型失败:', err);
+        setError('获取业务类型失败，请稍后重试');
+      }
     } finally {
       setLoading(false);
     }
   };
-  
+
+  // 保存到后端
+  const saveToBackend = async (data) => {
+    try {
+      await api.config.create({
+        shop_id: SHOP_ID,
+        key: CONFIG_KEY,
+        value: JSON.stringify(data)
+      });
+    } catch (err) {
+      console.error('更新业务类型到后端失败:', err);
+      setError('保存失败，请检查网络');
+    }
+  };
+
   // 添加新业务类型
   const addBusinessType = async (e) => {
     e.preventDefault();
-    try {
-      // 模拟添加，实际应该调用API
-      const newId = businessTypes.length + 1;
-      setBusinessTypes([...businessTypes, { ...newBusinessType, id: newId }]);
-      // 重置表单
-      setNewBusinessType({
-        name: '',
-        description: ''
-      });
-    } catch (err) {
-      console.error('添加业务类型失败:', err);
-      setError('添加业务类型失败，请稍后重试');
-    }
+    if (!newBusinessType.name.trim()) return;
+
+    const newList = [...businessTypes, { ...newBusinessType, id: Date.now() }];
+    setBusinessTypes(newList);
+    await saveToBackend(newList);
+
+    setNewBusinessType({ name: '', description: '' });
   };
-  
+
   // 删除业务类型
   const deleteBusinessType = async (id) => {
-    try {
-      // 模拟删除，实际应该调用API
-      setBusinessTypes(businessTypes.filter(type => type.id !== id));
-    } catch (err) {
-      console.error('删除业务类型失败:', err);
-      setError('删除业务类型失败，请稍后重试');
-    }
+    const newList = businessTypes.filter(type => type.id !== id);
+    setBusinessTypes(newList);
+    await saveToBackend(newList);
   };
-  
+
   useEffect(() => {
     fetchBusinessTypes();
   }, []);
-  
+
   return (
     <div className="business-types-page">
       <div className="page-header">
         <h1>业务类型管理</h1>
       </div>
-      
+
       {/* 添加业务类型表单 */}
       <div className="card level1 add-business-type-form">
         <h2>添加新业务类型</h2>
@@ -95,22 +117,21 @@ const BusinessTypes = () => {
             />
           </div>
           <div className="form-actions">
-            <button type="submit" className="primary">添加业务类型</button>
+            <button type="submit" className="primary" disabled={loading}>
+              {loading ? '保存中...' : '添加业务类型'}
+            </button>
           </div>
         </form>
       </div>
-      
+
       {/* 业务类型列表 */}
       <div className="card level1 business-types-list">
         <h2>业务类型列表</h2>
-        {loading ? (
+        {error && <div className="error-message" style={{ marginBottom: '1rem' }}>{error}</div>}
+
+        {loading && businessTypes.length === 0 ? (
           <div className="loading-container">
             <div className="loading"></div>
-          </div>
-        ) : error ? (
-          <div className="error-message">
-            <p>{error}</p>
-            <button className="primary" onClick={fetchBusinessTypes}>重试</button>
           </div>
         ) : businessTypes.length > 0 ? (
           <table className="business-types-table">
@@ -127,7 +148,6 @@ const BusinessTypes = () => {
                   <td>{type.name}</td>
                   <td>{type.description}</td>
                   <td>
-                    <button className="text" onClick={() => console.log('编辑业务类型:', type.id)}>编辑</button>
                     <button className="text danger" onClick={() => deleteBusinessType(type.id)}>删除</button>
                   </td>
                 </tr>

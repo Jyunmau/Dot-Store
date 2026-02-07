@@ -2,8 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
 
-from ...kernel.models.config import Config
-from ...shared.db.database import get_db
+from kernel.models.config import Config
+from shared.db.database import get_db
 
 # 创建配置路由
 router = APIRouter()
