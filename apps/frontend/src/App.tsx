@@ -9,6 +9,7 @@ import { useAuthStore } from '@/store/authStore';
 import { LoginPage, RegisterPage } from '@/pages/auth';
 import { StaffManagementPage } from '@/pages/setting';
 import { OrderListPage, OrderRecyclePage, CategoryManagePage, TagManagePage } from '@/pages/order';
+import { TransactionListPage, TransactionCategoryManagePage } from '@/pages/transaction';
 import { MainLayout } from '@/components/Layout';
 
 /**
@@ -70,6 +71,8 @@ const App: React.FC = () => {
               <Route path="orders/recycle" element={<OrderRecyclePage />} />
               <Route path="orders/categories" element={<CategoryManagePage />} />
               <Route path="orders/tags" element={<TagManagePage />} />
+              <Route path="transactions" element={<TransactionListPage />} />
+              <Route path="transactions/categories" element={<TransactionCategoryManagePage />} />
               <Route path="setting/staff" element={<StaffManagementPage />} />
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />

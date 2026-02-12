@@ -12,6 +12,8 @@ import {
   UserOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
+  DollarOutlined,
+  WalletOutlined,
 } from '@ant-design/icons';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/store/authStore';
@@ -56,12 +58,25 @@ const MainLayout: React.FC = () => {
     {
       key: '/orders/categories',
       icon: <AppstoreOutlined />,
-      label: '分类管理',
+      label: '订单分类',
     },
     {
       key: '/orders/tags',
       icon: <TagsOutlined />,
-      label: '标签管理',
+      label: '订单标签',
+    },
+    {
+      type: 'divider' as const,
+    },
+    {
+      key: '/transactions',
+      icon: <DollarOutlined />,
+      label: '收支记录',
+    },
+    {
+      key: '/transactions/categories',
+      icon: <WalletOutlined />,
+      label: '收支分类',
     },
   ];
 

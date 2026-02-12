@@ -130,6 +130,14 @@ npm run dev
 - ✅ 订单分类管理（自定义订单分类）
 - ✅ 订单标签管理（自定义订单标签）
 
+### Sprint 3: 收支记录模块
+- ✅ 收入记录（金额、收入类型、分类、凭证）
+- ✅ 支出记录（金额、支出类型、分类、凭证）
+- ✅ 收支分类管理（自定义收支分类）
+- ✅ 凭证上传（图片上传，支持预览）
+- ✅ 收支列表查看（按日期、类型、分类筛选）
+- ✅ 收支汇总统计（总收入、总支出、净利润）
+
 ## API接口
 
 ### 认证接口
@@ -178,6 +186,32 @@ npm run dev
 | GET | /api/v1/orders/categories/{id} | 获取订单分类详情 |
 | PUT | /api/v1/orders/categories/{id} | 更新订单分类 |
 | DELETE | /api/v1/orders/categories/{id} | 删除订单分类 |
+
+### 收支记录接口
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| POST | /api/v1/transactions | 创建收支记录 |
+| GET | /api/v1/transactions | 获取收支记录列表（支持筛选分页） |
+| GET | /api/v1/transactions/{id} | 获取收支记录详情 |
+| PUT | /api/v1/transactions/{id} | 更新收支记录 |
+| DELETE | /api/v1/transactions/{id} | 删除收支记录 |
+| GET | /api/v1/transactions/summary | 获取收支汇总统计 |
+| GET | /api/v1/transactions/categories | 获取收支分类名称列表 |
+| POST | /api/v1/transactions/batch | 批量创建收支记录 |
+
+### 收支分类接口
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| POST | /api/v1/transactions/categories | 创建收支分类 |
+| GET | /api/v1/transactions/categories | 获取收支分类列表 |
+| GET | /api/v1/transactions/categories/{id} | 获取收支分类详情 |
+| PUT | /api/v1/transactions/categories/{id} | 更新收支分类 |
+| DELETE | /api/v1/transactions/categories/{id} | 删除收支分类 |
+
+### 文件上传接口
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| POST | /api/v1/upload/attachment | 上传凭证图片 |
 
 ## 开发规范
 
