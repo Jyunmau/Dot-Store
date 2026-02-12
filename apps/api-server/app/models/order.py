@@ -2,7 +2,8 @@
 Dot-Store V2.1 订单数据模型
 """
 from datetime import datetime
-from sqlalchemy import Column, Integer, String, DateTime, Boolean, Text, Numeric, ForeignKey, JSON
+from sqlalchemy import Column, Integer, String, DateTime, Boolean, Text, Numeric, ForeignKey
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 from ..core.database import Base
 
@@ -18,8 +19,8 @@ class Order(Base):
     amount = Column(Numeric(12, 2), nullable=False)
     order_type = Column(String(32), nullable=False, index=True)
     category_id = Column(Integer, ForeignKey("order_categories.id"), nullable=True)
-    tags = Column(JSON, nullable=True)
-    order_metadata = Column(JSON, nullable=True)
+    tags = Column(JSONB, nullable=True)
+    order_metadata = Column(JSONB, nullable=True)
     status = Column(String(32), nullable=False, default="recorded", index=True)
     created_at = Column(DateTime, nullable=False, default=datetime.utcnow, index=True)
     updated_at = Column(DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)

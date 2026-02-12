@@ -92,7 +92,8 @@ class OrderService:
             if filters.status:
                 query = query.filter(Order.status == filters.status)
             if filters.tags:
-                query = query.filter(Order.tags.contains(filters.tags))
+                for tag in filters.tags:
+                    query = query.filter(Order.tags.contains([tag]))
 
         total = query.count()
 
