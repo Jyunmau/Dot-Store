@@ -121,6 +121,15 @@ npm run dev
 - ✅ 店员管理（添加/移除/权限设置）
 - ✅ 权限分组与验证
 
+### Sprint 2: 订单管理模块
+- ✅ 快速记录订单（金额、订单类型、标签等）
+- ✅ 查看订单列表（支持按日期、类型、标签筛选，分页加载）
+- ✅ 编辑订单（修改订单信息）
+- ✅ 删除订单（软删除，进入回收站）
+- ✅ 订单回收站（支持恢复已删除订单）
+- ✅ 订单分类管理（自定义订单分类）
+- ✅ 订单标签管理（自定义订单标签）
+
 ## API接口
 
 ### 认证接口
@@ -147,6 +156,28 @@ npm run dev
 | GET | /api/v1/permission/groups | 获取权限分组 |
 | GET | /api/v1/permission/me | 获取当前用户权限 |
 | GET | /api/v1/permission/check | 检查权限 |
+
+### 订单接口
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| POST | /api/v1/orders | 创建订单 |
+| GET | /api/v1/orders | 获取订单列表（支持筛选分页） |
+| GET | /api/v1/orders/{id} | 获取订单详情 |
+| PUT | /api/v1/orders/{id} | 更新订单 |
+| DELETE | /api/v1/orders/{id} | 删除订单（软删除） |
+| GET | /api/v1/orders/recycle | 获取回收站订单 |
+| POST | /api/v1/orders/{id}/restore | 恢复订单 |
+| GET | /api/v1/orders/types | 获取订单类型列表 |
+| GET | /api/v1/orders/tags | 获取订单标签列表 |
+
+### 订单分类接口
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| POST | /api/v1/orders/categories | 创建订单分类 |
+| GET | /api/v1/orders/categories | 获取订单分类列表 |
+| GET | /api/v1/orders/categories/{id} | 获取订单分类详情 |
+| PUT | /api/v1/orders/categories/{id} | 更新订单分类 |
+| DELETE | /api/v1/orders/categories/{id} | 删除订单分类 |
 
 ## 开发规范
 
