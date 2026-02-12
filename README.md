@@ -1,248 +1,165 @@
-# Dot-Store V1
+# Dot-Store 点单收银系统
 
-## 项目概述
+## 项目简介
 
-Dot-Store 是一个面向小微实体店铺的轻量化经营记录与理解工具，帮助老板从第一天开始，看清楚自己的生意，并且越用越清楚。
+Dot-Store 是一款面向小微商户的点单收银系统，支持多店铺管理、店员权限管理、订单管理、收支管理等功能。
 
-## 产品愿景与核心价值
+**当前版本：V2.1**
 
-### 产品愿景
+## 技术栈
 
-Dot-Store 的核心目标不是：
-- 管住老板
-- 规范流程
-- 复制大型企业 ERP
+### 后端
+- **框架**: FastAPI (Python 3.11+)
+- **数据库**: PostgreSQL 15
+- **缓存**: Redis 7
+- **认证**: JWT (python-jose)
+- **ORM**: SQLAlchemy 2.0
 
-而是：
-
-帮助老板从第一天开始，看清楚自己的生意，并且越用越清楚。
-
-### 核心价值主张
-
-1. 开箱即用的账务可见性
-2. 接受真实世界的混乱，而不是强行规范
-3. 所有数据都可解释、可修正
-4. 记录成本低于人工记账
-
-## 技术栈实现
-
-| 层级 | 技术选型 |
-|------|----------|
-| 后端语言 | Python 3.11+ |
-| Web 框架 | FastAPI |
-| ORM | SQLAlchemy 2.x |
-| 数据库 | PostgreSQL 14+ |
-| 数据迁移 | Alembic |
-| 前端框架 | React + Vite |
-| UI 策略 | Headless UI + 自建设计规范 |
-| 状态管理 | React Hooks / Context |
-| 容器化 | Docker + docker-compose |
-
-## 核心功能模块
-
-### 后端模块
-
-1. **Event 模块** - 最底层事实记录层，记录系统中的所有事件
-2. **Order 模块** - 业务理解层，用于记录订单和交易
-3. **Ledger 模块** - 权威事实层，记录账务分录
-4. **Report 模块** - 只读视图层，提供报表和汇总数据
-5. **Audit 模块** - 记录数据修改历史，支持审计追踪
-6. **Config 模块** - 用于存储系统配置
-
-### 前端页面
-
-1. **今日页面** - 显示今日盈亏和发生的记录
-2. **记录页面** - 用于创建和管理记录
-3. **账本页面** - 显示账务明细和分类账
-4. **报表页面** - 提供盈亏趋势和分类分析
-5. **设置页面** - 用于配置系统参数
+### 前端
+- **框架**: React 18 + TypeScript
+- **构建工具**: Vite 5
+- **UI组件库**: Ant Design 5
+- **状态管理**: Zustand
+- **HTTP客户端**: Axios
+- **样式**: Tailwind CSS
 
 ## 项目结构
 
 ```
 Dot-Store/
-├── apps/                  # 应用目录
-│   ├── api-server/        # 后端 API 服务
-│   │   ├── alembic/       # 数据库迁移
-│   │   ├── kernel/        # 核心业务层
-│   │   │   ├── models/    # 数据模型
-│   │   │   └── services/  # 业务服务
-│   │   ├── platforms/     # 行业应用层
-│   │   │   ├── models/    # 行业模型
-│   │   │   └── services/  # 行业服务
-│   │   ├── script/        # 门店定制层
-│   │   │   └── routes/    # API 路由
-│   │   ├── shared/        # 共享组件
-│   │   │   └── db/        # 数据库相关
-│   │   ├── Dockerfile     # API 服务 Docker 配置
-│   │   └── main.py        # 应用入口
-│   └── frontend/          # 前端应用
-├── .env                   # 环境变量配置
-├── deploy.sh              # 部署脚本
-├── docker-compose.yml     # Docker Compose 配置
-└── README.md              # 项目说明文档
+├── apps/
+│   ├── api-server/          # 后端服务
+│   │   ├── app/
+│   │   │   ├── api/         # API路由
+│   │   │   ├── core/        # 核心配置
+│   │   │   ├── models/      # 数据模型
+│   │   │   ├── schemas/     # Pydantic模型
+│   │   │   ├── services/    # 业务服务
+│   │   │   └── main.py      # 应用入口
+│   │   ├── alembic/         # 数据库迁移
+│   │   └── requirements.txt
+│   ├── frontend/            # 前端应用
+│   │   ├── src/
+│   │   │   ├── pages/       # 页面组件
+│   │   │   ├── store/       # 状态管理
+│   │   │   ├── services/    # API服务
+│   │   │   └── types/       # 类型定义
+│   │   └── package.json
+│   └── _archive/            # 归档代码
+├── documents/               # 项目文档
+│   ├── prd/                 # 产品需求文档
+│   ├── architecture/        # 技术设计文档
+│   ├── design/              # 设计文档
+│   └── plan/                # 计划文档
+├── docker-compose.yml
+└── README.md
 ```
 
-### 三层架构说明
+## 快速开始
 
-1. **Kernel 层** - 提供可复用的商业原子能力
-   - 包含 Resource、ResourceEvent、Account+Auth、Ledger、Audit Log 等核心模型和服务
-   - 专注于基础商业逻辑，不依赖具体行业
+### 环境要求
+- Docker 20.10+
+- Docker Compose 2.0+
+- Node.js 20+ (本地开发)
+- Python 3.11+ (本地开发)
 
-2. **Platforms 层** - 固化行业共识
-   - 实现 Table/Booth、Reservation Service、Member/Shareholder、CashbackPolicy 等行业特定功能
-   - 基于 Kernel 层构建，为特定行业提供标准化解决方案
-
-3. **Script 层** - 提供门店定制能力
-   - 包含 API 路由定义，处理 HTTP 请求
-   - 支持快速定制和试错，便于门店根据实际需求调整
-
-### 目录职责
-
-| 目录 | 职责 |
-|------|------|
-| kernel/ | 核心业务能力层，提供可复用的商业原子能力 |
-| platforms/ | 行业应用层，实现行业特定业务逻辑 |
-| script/ | 门店定制层，处理 HTTP 请求和路由 |
-| shared/ | 共享组件，提供跨层通用功能 |
-| alembic/ | 数据库迁移管理 |
-
-## API 文档
-
-API 服务启动后，可以通过以下地址访问 Swagger 文档：
-
-```
-http://localhost:8000/docs
-```
-
-主要 API 端点：
-
-| 模块 | API 路径 | 说明 |
-|------|----------|------|
-| 订单 | POST /api/orders | 创建订单 |
-| 订单 | GET /api/orders/{id} | 获取订单详情 |
-| 订单 | PUT /api/orders/{id} | 更新订单 |
-| 订单 | GET /api/orders | 获取订单列表 |
-| 账务 | POST /api/ledger/accounts | 创建分类账 |
-| 账务 | GET /api/ledger/accounts | 获取分类账列表 |
-| 账务 | POST /api/ledger/entries | 创建账务分录 |
-| 账务 | GET /api/ledger/entries | 获取账务分录列表 |
-| 报表 | GET /api/reports/summary | 获取报表汇总 |
-| 报表 | GET /api/reports/income-structure | 获取收入结构 |
-| 报表 | GET /api/reports/expense-structure | 获取成本结构 |
-| 配置 | POST /api/config | 创建/更新配置 |
-| 配置 | GET /api/config | 获取配置列表 |
-| 配置 | GET /api/config/{key} | 根据 Key 获取配置 |
-
-## 部署方式
-
-### Docker Compose 部署（推荐）
-
-1. 克隆项目代码到服务器
+### 使用Docker启动
 
 ```bash
-git clone <repository-url>
-cd Dot-Store
-```
-
-2. 配置环境变量
-
-复制 `.env.example` 文件为 `.env`，并根据实际情况修改配置：
-
-```bash
-cp .env.example .env
-# 编辑 .env 文件，修改数据库连接等配置
-```
-
-3. 启动 Docker Compose 服务
-
-```bash
+# 启动所有服务
 docker-compose up -d
+
+# 查看服务状态
+docker-compose ps
+
+# 停止所有服务
+docker-compose down
 ```
 
-4. 执行数据库迁移
+服务启动后：
+- 前端：http://localhost
+- 后端API：http://localhost:8000
+- API文档：http://localhost:8000/docs
+
+### 本地开发
+
+#### 后端开发
 
 ```bash
-docker-compose exec api python -m alembic upgrade head
+cd apps/api-server
+
+# 创建虚拟环境
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+# venv\Scripts\activate  # Windows
+
+# 安装依赖
+pip install -r requirements.txt
+
+# 启动服务
+uvicorn app.main:app --reload --port 8000
 ```
 
-5. 验证服务是否正常运行
+#### 前端开发
 
-- API 服务：访问 http://localhost:8000/docs
-- 前端应用：访问 http://localhost:3000
+```bash
+cd apps/frontend
 
-### 手动部署
+# 安装依赖
+npm install
 
-详见 `DEPLOYMENT.md` 文档
+# 启动开发服务器
+npm run dev
+```
+
+## V2.1 版本功能
+
+### Sprint 1: 用户认证与权限管理
+- ✅ 用户注册（支持手机号/邮箱）
+- ✅ 用户登录（登录失败锁定机制）
+- ✅ JWT令牌认证
+- ✅ 店员管理（添加/移除/权限设置）
+- ✅ 权限分组与验证
+
+## API接口
+
+### 认证接口
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| POST | /api/v1/auth/register | 用户注册 |
+| POST | /api/v1/auth/login | 用户登录 |
+| POST | /api/v1/auth/logout | 用户登出 |
+| POST | /api/v1/auth/refresh | 刷新令牌 |
+| GET | /api/v1/auth/users/me | 获取当前用户信息 |
+
+### 店员管理接口
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| POST | /api/v1/auth/staff | 添加店员 |
+| GET | /api/v1/auth/staff | 获取店员列表 |
+| GET | /api/v1/auth/staff/{id} | 获取店员详情 |
+| PUT | /api/v1/auth/staff/{id}/permissions | 更新店员权限 |
+| DELETE | /api/v1/auth/staff/{id} | 移除店员 |
+
+### 权限接口
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET | /api/v1/permission/groups | 获取权限分组 |
+| GET | /api/v1/permission/me | 获取当前用户权限 |
+| GET | /api/v1/permission/check | 检查权限 |
 
 ## 开发规范
 
-- 严格遵循 Architecture_README.md 进行系统架构设计
-- 后端采用分层结构：Controller → Service → Model
-- 前端采用组件化开发，使用 React Hooks 和 Context 管理状态
-- 代码添加函数级注释
-- 保持代码风格一致性
+详见 [.trae/rules/project_rules.md](.trae/rules/project_rules.md)
 
-## 核心设计原则
+## 文档
 
-1. **记录优先于规范** - 允许先记下来，再补充细节
-2. **可解释优先于准确** - 数据可以不完美，但必须可解释
-3. **修正优先于约束** - 允许手工调整，系统留下痕迹
-4. **真实世界优先于系统优雅** - 接受业务不规范，数据可能滞后
+详细文档请查看 `documents/` 目录：
+- 产品需求文档：`documents/prd/`
+- 技术设计文档：`documents/architecture/`
+- 设计文档：`documents/design/`
+- 开发计划：`documents/plan/`
 
-## 后续发展方向
+## 许可证
 
-1. 进行单元测试和集成测试
-2. 优化前端 UI/UX 设计
-3. 添加更多报表类型和数据分析功能
-4. 实现用户认证和权限管理
-5. 优化性能和安全性
-6. 支持更多数据源导入（如外卖平台数据）
-
-## 更新日志
-
-### 最新修复 (2026-01-25)
-
-1. **金额显示修复**
-   - 修复了今日记录、账本、今日关键指标中的金额显示为NaN的问题
-   - 在前端组件中添加了空值检查和默认值处理
-   - 在后端API返回中确保金额字段返回有效的数值
-
-2. **报表功能修复**
-   - 修复了报表无法正常显示的问题
-   - 实现了日期范围切换功能，支持今日、本周、本月和自定义日期范围
-   - 确保切换时间后数据会实时更新
-   - 优化了报表数据的获取和处理逻辑
-
-3. **设置页面完善**
-   - 实现了账目分类管理页面
-   - 实现了标签管理页面
-   - 实现了业务类型管理页面
-   - 实现了账户设置页面
-   - 添加了完整的CRUD功能支持
-
-4. **API优化**
-   - 完善了报表API，支持多种日期范围查询
-   - 确保所有API返回的金额字段都有默认值处理
-   - 优化了API响应时间
-
-## 项目亮点
-
-- 模块化设计，便于扩展和维护
-- 接受真实世界的不完美，允许数据不完整
-- 支持手工修正和审计追踪
-- 简洁易用的界面设计
-- 容器化部署，便于快速上线
-
-## 文档中心
-
-项目所有相关文档已整合到 `docs/` 目录下，包括：
-
-- [文档目录](docs/README.md) - 所有文档的索引和导航
-- [产品设计文档](README.md#产品愿景与核心价值) - 产品愿景和核心功能
-- [架构设计文档](docs/kernel/README.md) - 三层架构设计说明
-- [技术实现文档](docs/database-design.md) - API设计和数据库设计
-- [开发规范文档](.trae/rules/project_rules.md) - 代码规范和开发流程
-- [文档更新机制](docs/文档更新机制.md) - 文档维护和更新规则
-
-**Dot-Store V1 - 帮助老板从第一天开始，看清楚自己的生意，并且越用越清楚。**
+MIT License
