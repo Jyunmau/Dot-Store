@@ -2,7 +2,7 @@
  * 注册页面
  */
 import React, { useState } from 'react';
-import { Form, Input, Button, Card, message, Select, Steps } from 'antd';
+import { Form, Input, Button, Card, message, Select, Steps, Space } from 'antd';
 import { LockOutlined, MobileOutlined, MailOutlined, ShopOutlined, EnvironmentOutlined } from '@ant-design/icons';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuthStore } from '@/store/authStore';
@@ -18,32 +18,44 @@ const SHOP_TYPES = [
   { value: 'other', label: '其他' },
 ];
 
+interface StepOneValues {
+  phone?: string;
+  email?: string;
+  password: string;
+  confirmPassword: string;
+}
+
+interface StepTwoValues {
+  shop_name: string;
+  shop_type: string;
+  city: string;
+}
+
 const RegisterPage: React.FC = () => {
   const navigate = useNavigate();
   const { register, loading, error } = useAuthStore();
   const [currentStep, setCurrentStep] = useState(0);
   const [registerType, setRegisterType] = useState<'phone' | 'email'>('phone');
+  const [stepOneValues, setStepOneValues] = useState<StepOneValues | null>(null);
   const [form] = Form.useForm();
 
-  const handleSubmit = async (values: {
-    phone?: string;
-    email?: string;
-    password: string;
-    confirmPassword: string;
-    shop_name: string;
-    shop_type: string;
-    city: string;
-  }) => {
-    if (values.password !== values.confirmPassword) {
+  const handleSubmit = async (values: StepTwoValues) => {
+    if (!stepOneValues) {
+      message.error('请先完成账户信息');
+      setCurrentStep(0);
+      return;
+    }
+
+    if (stepOneValues.password !== stepOneValues.confirmPassword) {
       message.error('两次输入的密码不一致');
       return;
     }
 
     try {
       await register({
-        phone: registerType === 'phone' ? values.phone : undefined,
-        email: registerType === 'email' ? values.email : undefined,
-        password: values.password,
+        phone: registerType === 'phone' ? stepOneValues.phone : undefined,
+        email: registerType === 'email' ? stepOneValues.email : undefined,
+        password: stepOneValues.password,
         shop_name: values.shop_name,
         shop_type: values.shop_type,
         city: values.city,
@@ -55,16 +67,15 @@ const RegisterPage: React.FC = () => {
     }
   };
 
-  const handleStepChange = (step: number) => {
-    if (step === 1) {
-      form.validateFields(['phone', 'email', 'password', 'confirmPassword']).then(() => {
-        setCurrentStep(step);
-      }).catch(() => {
+  const handleNextStep = () => {
+    form.validateFields(['phone', 'email', 'password', 'confirmPassword'])
+      .then((values) => {
+        setStepOneValues(values);
+        setCurrentStep(1);
+      })
+      .catch(() => {
         message.error('请完善账户信息');
       });
-    } else {
-      setCurrentStep(step);
-    }
   };
 
   const handleRegisterTypeChange = (type: 'phone' | 'email') => {
@@ -95,11 +106,12 @@ const RegisterPage: React.FC = () => {
           onFinish={handleSubmit}
           layout="vertical"
           size="large"
+          preserve={true}
         >
           {currentStep === 0 && (
             <>
               <div className="flex justify-center mb-4">
-                <Button.Group>
+                <Space.Compact>
                   <Button
                     type={registerType === 'phone' ? 'primary' : 'default'}
                     onClick={() => handleRegisterTypeChange('phone')}
@@ -112,7 +124,7 @@ const RegisterPage: React.FC = () => {
                   >
                     邮箱注册
                   </Button>
-                </Button.Group>
+                </Space.Compact>
               </div>
 
               {registerType === 'phone' ? (
@@ -185,7 +197,7 @@ const RegisterPage: React.FC = () => {
               <Button
                 type="primary"
                 block
-                onClick={() => handleStepChange(1)}
+                onClick={handleNextStep}
                 className="h-12"
               >
                 下一步

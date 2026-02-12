@@ -3,7 +3,7 @@
  */
 import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { ConfigProvider } from 'antd';
+import { ConfigProvider, App as AntApp } from 'antd';
 import zhCN from 'antd/locale/zh_CN';
 import { useAuthStore } from '@/store/authStore';
 import { LoginPage, RegisterPage } from '@/pages/auth';
@@ -90,31 +90,33 @@ const App: React.FC = () => {
 
   return (
     <ConfigProvider locale={zhCN}>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route
-            path="/"
-            element={
-              <ProtectedRoute>
-                <HomePage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/setting/staff"
-            element={
-              <ProtectedRoute>
-                <MainLayout>
-                  <StaffManagementPage />
-                </MainLayout>
-              </ProtectedRoute>
-            }
-          />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </BrowserRouter>
+      <AntApp>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute>
+                  <HomePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/setting/staff"
+              element={
+                <ProtectedRoute>
+                  <MainLayout>
+                    <StaffManagementPage />
+                  </MainLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </BrowserRouter>
+      </AntApp>
     </ConfigProvider>
   );
 };

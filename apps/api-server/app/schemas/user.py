@@ -3,7 +3,7 @@ Dot-Store V2.1 用户数据模式
 """
 from datetime import datetime
 from typing import Optional, List
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 import re
 
 
@@ -47,15 +47,11 @@ class UserCreate(UserBase):
             raise ValueError('密码至少8位，需包含字母和数字')
         return v
 
-    @field_validator('phone', 'email')
-    @classmethod
-    def validate_contact(cls, v, info):
-        if info.field_name == 'phone' and v is None:
-            phone_val = info.data.get('phone')
-            email_val = info.data.get('email')
-            if phone_val is None and email_val is None:
-                raise ValueError('手机号和邮箱至少填写一个')
-        return v
+    @model_validator(mode='after')
+    def validate_contact(self):
+        if self.phone is None and self.email is None:
+            raise ValueError('手机号和邮箱至少填写一个')
+        return self
 
 
 class UserLogin(BaseModel):
@@ -153,6 +149,12 @@ class StaffCreate(BaseModel):
         if not re.match(r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]{8,}$', v):
             raise ValueError('密码至少8位，需包含字母和数字')
         return v
+
+    @model_validator(mode='after')
+    def validate_contact(self):
+        if self.phone is None and self.email is None:
+            raise ValueError('手机号和邮箱至少填写一个')
+        return self
 
 
 class StaffUpdate(BaseModel):

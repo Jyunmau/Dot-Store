@@ -32,13 +32,21 @@ apiClient.interceptors.request.use(
 
 /**
  * 响应拦截器 - 处理401错误
+ * 注意：登录接口返回401表示密码错误，不应触发登出和跳转
  */
 apiClient.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
     if (error.response?.status === 401) {
-      useAuthStore.getState().logout();
-      window.location.href = '/login';
+      const requestUrl = error.config?.url || '';
+      const isAuthEndpoint = requestUrl.includes('/auth/login') || 
+                             requestUrl.includes('/auth/register') ||
+                             requestUrl.includes('/auth/refresh');
+      
+      if (!isAuthEndpoint) {
+        useAuthStore.getState().logout();
+        window.location.href = '/login';
+      }
     }
     return Promise.reject(error);
   }

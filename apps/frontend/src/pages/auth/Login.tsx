@@ -2,10 +2,11 @@
  * 登录页面
  */
 import React, { useState } from 'react';
-import { Form, Input, Button, Card, message, Tabs } from 'antd';
-import { UserOutlined, LockOutlined, MobileOutlined, MailOutlined } from '@ant-design/icons';
+import { Form, Input, Button, Card, Tabs, App } from 'antd';
+import { MobileOutlined, MailOutlined, LockOutlined } from '@ant-design/icons';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuthStore } from '@/store/authStore';
+import { AxiosError } from 'axios';
 
 interface LoginForm {
   username: string;
@@ -14,17 +15,44 @@ interface LoginForm {
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
-  const { login, loading, error, clearError } = useAuthStore();
+  const { login, loading, clearError } = useAuthStore();
   const [loginType, setLoginType] = useState<'phone' | 'email'>('phone');
   const [form] = Form.useForm();
+  const { message } = App.useApp();
 
   const handleSubmit = async (values: LoginForm) => {
     try {
       await login(values.username, values.password);
       message.success('登录成功');
       navigate('/');
-    } catch {
-      message.error(error || '登录失败');
+    } catch (error: unknown) {
+      let errorMessage = '登录失败';
+      
+      if (error instanceof AxiosError) {
+        if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
+          errorMessage = '请求失败，请检查网络';
+        } else if (error.code === 'ERR_NETWORK' || error.message === 'Network Error') {
+          errorMessage = '请求失败，请检查网络';
+        } else if (error.response?.status === 401) {
+          errorMessage = '账号或密码不正确';
+        } else if (error.response?.status === 422) {
+          errorMessage = '账号或密码不正确';
+        } else if (error.response?.data?.detail) {
+          const detail = error.response.data.detail;
+          if (typeof detail === 'string') {
+            errorMessage = detail;
+          } else if (Array.isArray(detail) && detail.length > 0) {
+            errorMessage = detail[0].msg || '账号或密码不正确';
+          }
+        }
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      
+      message.error({
+        content: errorMessage,
+        duration: 3,
+      });
     }
   };
 
