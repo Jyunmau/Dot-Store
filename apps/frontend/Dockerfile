@@ -1,53 +1,29 @@
-# 第一阶段：构建阶段
-FROM node:18-alpine AS builder
+# Dot-Store V2.1 前端Dockerfile
+FROM node:20-alpine as builder
 
-# 设置工作目录
 WORKDIR /app
 
-# 复制 package.json 和 package-lock.json
+# 复制package文件
 COPY package*.json ./
 
 # 安装依赖
-RUN npm ci
+RUN npm install
 
-# 复制项目文件
+# 复制源代码
 COPY . .
 
-# 构建生产版本
+# 构建应用
 RUN npm run build
 
-# 第二阶段：生产阶段
-FROM nginx:1.25-alpine AS production
+# 生产环境
+FROM nginx:alpine
 
-# 复制构建产物到 Nginx 静态目录
+# 复制构建产物
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# 复制 Nginx 配置文件
+# 复制nginx配置
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# 暴露端口
 EXPOSE 80
 
-# 启动 Nginx
 CMD ["nginx", "-g", "daemon off;"]
-
-# 开发阶段：用于本地开发
-FROM node:18-alpine AS development
-
-# 设置工作目录
-WORKDIR /app
-
-# 复制 package.json 和 package-lock.json
-COPY package*.json ./
-
-# 安装依赖
-RUN npm ci
-
-# 复制项目文件
-COPY . .
-
-# 暴露开发服务器端口
-EXPOSE 5173
-
-# 启动开发服务器
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
