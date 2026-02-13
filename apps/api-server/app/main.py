@@ -1,13 +1,17 @@
 """
 Dot-Store V2.1 主应用
 """
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
 
 from .core.config import settings
 from .core.database import engine, Base
 from .api import api_router
+
+UPLOAD_DIR = "uploads"
 
 
 @asynccontextmanager
@@ -16,6 +20,8 @@ async def lifespan(app: FastAPI):
     应用生命周期管理
     """
     Base.metadata.create_all(bind=engine)
+    if not os.path.exists(UPLOAD_DIR):
+        os.makedirs(UPLOAD_DIR)
     yield
 
 
@@ -38,6 +44,8 @@ app.add_middleware(
 )
 
 app.include_router(api_router, prefix=settings.API_V1_PREFIX)
+
+app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
 
 
 @app.get("/", tags=["根路径"])
