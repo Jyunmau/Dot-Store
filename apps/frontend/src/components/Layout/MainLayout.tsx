@@ -27,6 +27,7 @@ import {
   HomeOutlined,
   MenuOutlined,
   BellOutlined,
+  UsergroupAddOutlined,
 } from '@ant-design/icons';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/store/authStore';
@@ -207,6 +208,19 @@ const MainLayout: React.FC = () => {
       icon: <SettingOutlined />,
       label: '备份设置',
     },
+    {
+      type: 'divider' as const,
+    },
+    {
+      key: '/setting/staff',
+      icon: <UsergroupAddOutlined />,
+      label: '店员管理',
+    },
+    {
+      key: '/setting/notification',
+      icon: <BellOutlined />,
+      label: '通知设置',
+    },
   ];
 
   const userMenuItems = [
@@ -214,11 +228,6 @@ const MainLayout: React.FC = () => {
       key: 'profile',
       icon: <UserOutlined />,
       label: '个人信息',
-    },
-    {
-      key: 'notification',
-      icon: <BellOutlined />,
-      label: '通知设置',
     },
     {
       key: 'logout',

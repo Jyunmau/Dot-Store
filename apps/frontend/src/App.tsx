@@ -7,7 +7,7 @@ import { ConfigProvider, App as AntApp } from 'antd';
 import zhCN from 'antd/locale/zh_CN';
 import { useAuthStore } from '@/store/authStore';
 import { LoginPage, RegisterPage } from '@/pages/auth';
-import { StaffManagementPage } from '@/pages/setting';
+import { StaffManagementPage, NotificationSettingsPage } from '@/pages/setting';
 import { OrderListPage, OrderRecyclePage, CategoryManagePage, TagManagePage } from '@/pages/order';
 import { TransactionListPage, TransactionCategoryManagePage } from '@/pages/transaction';
 import { ReportPage } from '@/pages/report';
@@ -98,6 +98,7 @@ const App: React.FC = () => {
               <Route path="backup" element={<BackupManagePage />} />
               <Route path="backup/settings" element={<BackupSettingsPage />} />
               <Route path="setting/staff" element={<StaffManagementPage />} />
+              <Route path="setting/notification" element={<NotificationSettingsPage />} />
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
