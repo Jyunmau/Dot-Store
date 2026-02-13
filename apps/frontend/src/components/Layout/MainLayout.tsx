@@ -18,7 +18,6 @@ import {
   TeamOutlined,
   TrophyOutlined,
   SwapOutlined,
-  BoxPlotOutlined,
 } from '@ant-design/icons';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/store/authStore';

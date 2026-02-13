@@ -273,9 +273,11 @@ npm run dev
 | GET | /api/v1/members/{id} | 获取会员详情 |
 | PUT | /api/v1/members/{id} | 更新会员 |
 | DELETE | /api/v1/members/{id} | 删除会员 |
-| POST | /api/v1/members/{id}/points | 更新会员积分 |
-| GET | /api/v1/members/{id}/points/records | 获取积分记录 |
-| POST | /api/v1/members/{id}/points/exchange | 积分兑换 |
+| POST | /api/v1/members/points/add | 增加会员积分 |
+| POST | /api/v1/members/points/subtract | 减少会员积分 |
+| GET | /api/v1/members/points/{member_id} | 获取会员积分记录 |
+| POST | /api/v1/members/exchange | 积分兑换 |
+| GET | /api/v1/members/exchanges | 获取积分兑换记录 |
 
 ### 备份管理接口
 | 方法 | 路径 | 说明 |
