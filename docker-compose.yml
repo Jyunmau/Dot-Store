@@ -1,0 +1,82 @@
+version: '3.8'
+
+services:
+  # PostgreSQL数据库
+  postgres:
+    image: postgres:15-alpine
+    container_name: dot-store-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: dot_store
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - dot-store-network
+
+  # Redis缓存
+  redis:
+    image: redis:7-alpine
+    container_name: dot-store-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - dot-store-network
+
+  # 后端API服务
+  api-server:
+    build:
+      context: ./apps/api-server
+      dockerfile: Dockerfile
+    container_name: dot-store-api
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/dot_store
+      - REDIS_URL=redis://redis:6379/0
+      - JWT_SECRET_KEY=your-super-secret-key-change-in-production
+      - CORS_ORIGINS=["http://localhost:3000","http://localhost:5173","http://localhost"]
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./apps/api-server:/app
+    networks:
+      - dot-store-network
+
+  # 前端服务
+  frontend:
+    build:
+      context: ./apps/frontend
+      dockerfile: Dockerfile
+    container_name: dot-store-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - api-server
+    networks:
+      - dot-store-network
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  dot-store-network:
+    driver: bridge
