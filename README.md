@@ -152,6 +152,19 @@ npm run dev
 - ✅ 库存预警（库存低于阈值时预警）
 - ✅ 库存统计（食材总数、预警数量统计）
 
+### Sprint 6: 会员管理模块
+- ✅ 会员管理（添加/编辑/删除会员）
+- ✅ 会员积分（积分累计、积分规则设置）
+- ✅ 积分兑换（积分兑换商品或服务）
+- ✅ 积分记录（积分变动记录查询）
+
+### Sprint 7: 数据备份模块
+- ✅ 手动备份（创建数据备份）
+- ✅ 备份列表（查看备份记录）
+- ✅ 备份下载（下载备份文件）
+- ✅ 数据恢复（从备份恢复数据）
+- ✅ 备份设置（自动备份开关、备份保留天数）
+
 ## API接口
 
 ### 认证接口
@@ -251,6 +264,30 @@ npm run dev
 | GET | /api/v1/stock/records | 获取库存记录列表 |
 | GET | /api/v1/stock/warnings | 获取库存预警列表 |
 | GET | /api/v1/stock/summary | 获取库存统计 |
+
+### 会员管理接口
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| POST | /api/v1/members | 创建会员 |
+| GET | /api/v1/members | 获取会员列表 |
+| GET | /api/v1/members/{id} | 获取会员详情 |
+| PUT | /api/v1/members/{id} | 更新会员 |
+| DELETE | /api/v1/members/{id} | 删除会员 |
+| POST | /api/v1/members/{id}/points | 更新会员积分 |
+| GET | /api/v1/members/{id}/points/records | 获取积分记录 |
+| POST | /api/v1/members/{id}/points/exchange | 积分兑换 |
+
+### 备份管理接口
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| POST | /api/v1/backups | 创建备份 |
+| GET | /api/v1/backups | 获取备份列表 |
+| GET | /api/v1/backups/{id} | 获取备份详情 |
+| DELETE | /api/v1/backups/{id} | 删除备份 |
+| GET | /api/v1/backups/{id}/download | 下载备份文件 |
+| POST | /api/v1/backups/{id}/restore | 从备份恢复数据 |
+| GET | /api/v1/backup-settings | 获取备份设置 |
+| PUT | /api/v1/backup-settings | 更新备份设置 |
 
 ## 开发规范
 

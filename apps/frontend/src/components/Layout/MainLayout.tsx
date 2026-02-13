@@ -91,6 +91,24 @@ const MainLayout: React.FC = () => {
       icon: <BarChartOutlined />,
       label: '经营报表',
     },
+    {
+      type: 'divider' as const,
+    },
+    {
+      key: '/members',
+      icon: <TeamOutlined />,
+      label: '会员管理',
+    },
+    {
+      key: '/members/points',
+      icon: <TrophyOutlined />,
+      label: '积分记录',
+    },
+    {
+      key: '/members/exchange',
+      icon: <SwapOutlined />,
+      label: '积分兑换',
+    },
   ];
 
   const userMenuItems = [
