@@ -238,8 +238,9 @@ const StaffManagementPage: React.FC = () => {
         open={modalVisible}
         onCancel={() => setModalVisible(false)}
         footer={null}
+        destroyOnHidden
       >
-        <Form form={form} layout="vertical" onFinish={handleSubmitStaff}>
+        <Form form={form} layout="vertical" onFinish={handleSubmitStaff} preserve={false}>
           <Form.Item
             name="phone"
             label="手机号"
@@ -288,8 +289,9 @@ const StaffManagementPage: React.FC = () => {
         onCancel={() => setPermissionModalVisible(false)}
         footer={null}
         width={600}
+        destroyOnHidden
       >
-        <Form form={permissionForm} layout="vertical" onFinish={handleSubmitPermissions}>
+        <Form form={permissionForm} layout="vertical" onFinish={handleSubmitPermissions} preserve={false}>
           {Object.entries(permissionGroups).map(([key, group]) => (
             <Form.Item key={key} label={group.name}>
               <Checkbox.Group

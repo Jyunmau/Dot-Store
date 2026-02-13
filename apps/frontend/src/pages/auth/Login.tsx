@@ -17,7 +17,8 @@ const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const { login, loading, clearError } = useAuthStore();
   const [loginType, setLoginType] = useState<'phone' | 'email'>('phone');
-  const [form] = Form.useForm();
+  const [phoneForm] = Form.useForm();
+  const [emailForm] = Form.useForm();
   const { message } = App.useApp();
 
   const handleSubmit = async (values: LoginForm) => {
@@ -58,7 +59,8 @@ const LoginPage: React.FC = () => {
 
   const handleTabChange = (key: string) => {
     setLoginType(key as 'phone' | 'email');
-    form.resetFields();
+    phoneForm.resetFields();
+    emailForm.resetFields();
     clearError();
   };
 
@@ -80,7 +82,7 @@ const LoginPage: React.FC = () => {
               label: '手机号登录',
               children: (
                 <Form
-                  form={form}
+                  form={phoneForm}
                   onFinish={handleSubmit}
                   layout="vertical"
                   size="large"
@@ -130,7 +132,7 @@ const LoginPage: React.FC = () => {
               label: '邮箱登录',
               children: (
                 <Form
-                  form={form}
+                  form={emailForm}
                   onFinish={handleSubmit}
                   layout="vertical"
                   size="large"
