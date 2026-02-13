@@ -19,6 +19,8 @@ import {
   TrophyOutlined,
   SwapOutlined,
   InboxOutlined,
+  DatabaseOutlined,
+  WarningOutlined,
   CloudServerOutlined,
   SettingOutlined,
 } from '@ant-design/icons';
@@ -97,9 +99,19 @@ const MainLayout: React.FC = () => {
       type: 'divider' as const,
     },
     {
-      key: '/stock',
+      key: '/stock/ingredients',
       icon: <InboxOutlined />,
-      label: '库存管理',
+      label: '食材管理',
+    },
+    {
+      key: '/stock/records',
+      icon: <DatabaseOutlined />,
+      label: '库存记录',
+    },
+    {
+      key: '/stock/warnings',
+      icon: <WarningOutlined />,
+      label: '库存预警',
     },
     {
       type: 'divider' as const,

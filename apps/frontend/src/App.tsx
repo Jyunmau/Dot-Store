@@ -11,7 +11,7 @@ import { StaffManagementPage } from '@/pages/setting';
 import { OrderListPage, OrderRecyclePage, CategoryManagePage, TagManagePage } from '@/pages/order';
 import { TransactionListPage, TransactionCategoryManagePage } from '@/pages/transaction';
 import { ReportPage } from '@/pages/report';
-import { StockPage } from '@/pages/stock';
+import { IngredientListPage, StockRecordPage, StockWarningPage } from '@/pages/stock';
 import { MemberListPage, PointsRecordPage, PointsExchangePage } from '@/pages/member';
 import { BackupManagePage, BackupSettingsPage } from '@/pages/backup';
 import { MainLayout } from '@/components/Layout';
@@ -78,7 +78,9 @@ const App: React.FC = () => {
               <Route path="transactions" element={<TransactionListPage />} />
               <Route path="transactions/categories" element={<TransactionCategoryManagePage />} />
               <Route path="reports" element={<ReportPage />} />
-              <Route path="stock/*" element={<StockPage />} />
+              <Route path="stock/ingredients" element={<IngredientListPage />} />
+              <Route path="stock/records" element={<StockRecordPage />} />
+              <Route path="stock/warnings" element={<StockWarningPage />} />
               <Route path="members" element={<MemberListPage />} />
               <Route path="members/points" element={<PointsRecordPage />} />
               <Route path="members/exchange" element={<PointsExchangePage />} />

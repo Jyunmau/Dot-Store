@@ -14,7 +14,7 @@ import {
   Form,
   InputNumber,
   Tag,
-  Tabs,
+  Select,
 } from 'antd';
 import {
   PlusOutlined,
@@ -230,7 +230,7 @@ const IngredientListPage: React.FC = () => {
   return (
     <div className="p-6">
       <Card
-        title={`食材管理 (${stockWarnings.length > 0 ? `${stockWarnings.length}个预警` : ''})`}
+        title={stockWarnings.length > 0 ? `食材管理 (${stockWarnings.length}个预警)` : '食材管理'}
         extra={
           <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd}>
             添加食材
@@ -495,9 +495,14 @@ const StockRecordPage: React.FC = () => {
             label="食材"
             rules={[{ required: true, message: '请选择食材' }]}
           >
-            <Input
-              placeholder="请输入食材ID"
-              type="number"
+            <Select
+              placeholder="请选择食材"
+              showSearch
+              optionFilterProp="label"
+              options={ingredients.map((ing) => ({
+                value: ing.id,
+                label: `${ing.name} (库存: ${Number(ing.current_stock).toFixed(2)} ${ing.unit})`,
+              }))}
             />
           </Form.Item>
           <Form.Item
@@ -603,32 +608,5 @@ const StockWarningPage: React.FC = () => {
   );
 };
 
-/**
- * 库存管理主页面（带标签页）
- */
-const StockPage: React.FC = () => {
-  const items = [
-    {
-      key: 'ingredients',
-      label: '食材管理',
-      children: <IngredientListPage />,
-    },
-    {
-      key: 'records',
-      label: '库存记录',
-      children: <StockRecordPage />,
-    },
-    {
-      key: 'warnings',
-      label: '库存预警',
-      children: <StockWarningPage />,
-    },
-  ];
-
-  return (
-    <Tabs defaultActiveKey="ingredients" items={items} />
-  );
-};
-
-export { IngredientListPage, StockRecordPage, StockWarningPage, StockPage };
-export default StockPage;
+export { IngredientListPage, StockRecordPage, StockWarningPage };
+export default IngredientListPage;
