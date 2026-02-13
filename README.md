@@ -165,6 +165,13 @@ npm run dev
 - ✅ 数据恢复（从备份恢复数据）
 - ✅ 备份设置（自动备份开关、备份保留天数）
 
+### Sprint 8: PWA支持与移动端优化
+- ✅ PWA安装（支持添加到主屏幕、离线启动、全屏显示）
+- ✅ 离线支持（离线查看历史数据、网络状态提示、自动同步）
+- ✅ 推送通知（重要事件推送通知、通知点击跳转）
+- ✅ 移动端优化（响应式布局优化、触摸交互优化、性能优化）
+- ✅ Service Worker（静态资源缓存、API响应缓存、离线页面fallback）
+
 ## API接口
 
 ### 认证接口
@@ -290,6 +297,16 @@ npm run dev
 | POST | /api/v1/backups/{id}/restore | 从备份恢复数据 |
 | GET | /api/v1/backup-settings | 获取备份设置 |
 | PUT | /api/v1/backup-settings | 更新备份设置 |
+
+### 推送通知接口
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET | /api/v1/push/vapid-public-key | 获取VAPID公钥 |
+| POST | /api/v1/push/subscribe | 订阅推送通知 |
+| DELETE | /api/v1/push/subscribe | 取消订阅推送通知 |
+| GET | /api/v1/push/subscriptions | 获取当前用户订阅列表 |
+| POST | /api/v1/push/send | 发送推送通知（仅店主） |
+| POST | /api/v1/push/test | 发送测试通知 |
 
 ## 开发规范
 

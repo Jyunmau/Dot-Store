@@ -52,7 +52,7 @@ const initialState = {
   error: null,
 };
 
-export const useTransactionStore = create<TransactionState>((set, get) => ({
+export const useTransactionStore = create<TransactionState>((set) => ({
   ...initialState,
 
   createTransaction: async (data: TransactionCreateParams) => {

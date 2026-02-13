@@ -28,7 +28,7 @@ interface BackupState {
   clearError: () => void;
 }
 
-const useBackupStore = create<BackupState>((set, get) => ({
+const useBackupStore = create<BackupState>((set) => ({
   backups: [],
   currentBackup: null,
   backupSettings: null,

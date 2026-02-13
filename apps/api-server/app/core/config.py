@@ -40,6 +40,15 @@ class Settings(BaseSettings):
     
     # CORS配置
     CORS_ORIGINS: list[str] = ["http://localhost:3000", "http://localhost:5173"]
+    
+    # Web Push配置 (VAPID)
+    VAPID_SUBJECT: str = "mailto:admin@dot-store.com"
+    VAPID_PUBLIC_KEY: str = ""
+    VAPID_PRIVATE_KEY: str = ""
+    
+    # 文件上传配置
+    UPLOAD_DIR: str = "uploads"
+    MAX_UPLOAD_SIZE: int = 5 * 1024 * 1024  # 5MB
 
 
 @lru_cache()

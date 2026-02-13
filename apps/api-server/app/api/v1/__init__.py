@@ -13,6 +13,7 @@ from .reports import router as reports_router
 from .stock import router as stock_router
 from .backup import router as backup_router, settings_router as backup_settings_router
 from .member import router as member_router
+from .push import router as push_router
 
 api_router = APIRouter()
 
@@ -28,5 +29,6 @@ api_router.include_router(stock_router)
 api_router.include_router(backup_router)
 api_router.include_router(backup_settings_router)
 api_router.include_router(member_router)
+api_router.include_router(push_router)
 
 __all__ = ["api_router"]

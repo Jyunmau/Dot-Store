@@ -7,6 +7,7 @@ from .transaction import Transaction, TransactionCategory
 from .stock import Ingredient, StockRecord
 from .member import Member, PointsRecord, PointsExchange
 from .backup import Backup, BackupSettings
+from .push import PushSubscription
 
 __all__ = [
     "User",
@@ -21,4 +22,5 @@ __all__ = [
     "PointsExchange",
     "Backup",
     "BackupSettings",
+    "PushSubscription",
 ]

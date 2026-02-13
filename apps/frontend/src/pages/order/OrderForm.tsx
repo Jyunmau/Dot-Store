@@ -2,7 +2,7 @@
  * 订单表单组件
  */
 import React, { useEffect } from 'react';
-import { Form, Input, InputNumber, Select, Button, Space, message, Tag } from 'antd';
+import { Form, Input, InputNumber, Select, Button, Space, message } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { useOrderStore } from '@/store/orderStore';
 import type { Order, OrderCreateParams, OrderUpdateParams } from '@/types/order';

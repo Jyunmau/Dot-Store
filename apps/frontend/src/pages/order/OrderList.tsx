@@ -26,7 +26,6 @@ import {
 import type { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
 import { useOrderStore } from '@/store/orderStore';
-import { useAuthStore } from '@/store/authStore';
 import type { Order, OrderFilters } from '@/types/order';
 import { getOrderTypeLabel, getOrderStatusLabel, ORDER_TYPE_OPTIONS, ORDER_STATUS_OPTIONS } from '@/types/order';
 import OrderForm from './OrderForm';
@@ -48,7 +47,6 @@ const OrderListPage: React.FC = () => {
     listCategories,
     categories,
   } = useOrderStore();
-  const { user } = useAuthStore();
 
   const [filters, setFilters] = useState<OrderFilters>({});
   const [isModalOpen, setIsModalOpen] = useState(false);

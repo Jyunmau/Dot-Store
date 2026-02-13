@@ -63,7 +63,7 @@ const initialState = {
   error: null,
 };
 
-export const useStockStore = create<StockState>((set, get) => ({
+export const useStockStore = create<StockState>((set) => ({
   ...initialState,
 
   createIngredient: async (data: IngredientCreateParams) => {

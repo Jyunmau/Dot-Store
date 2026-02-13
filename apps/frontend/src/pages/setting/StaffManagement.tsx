@@ -8,7 +8,6 @@ import {
   Modal,
   Form,
   Input,
-  Select,
   Checkbox,
   message,
   Space,
@@ -25,8 +24,6 @@ import {
 import type { ColumnsType } from 'antd/es/table';
 import { authService, permissionService } from '@/services';
 import type { Staff, PermissionGroups } from '@/types/user';
-
-const { Option } = Select;
 
 const StaffManagementPage: React.FC = () => {
   const [staffList, setStaffList] = useState<Staff[]>([]);
