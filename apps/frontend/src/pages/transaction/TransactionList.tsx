@@ -346,7 +346,7 @@ const TransactionListPage: React.FC = () => {
         }}
         footer={null}
         width={600}
-        destroyOnClose
+        destroyOnHidden
       >
         <TransactionForm
           transaction={editingTransaction}

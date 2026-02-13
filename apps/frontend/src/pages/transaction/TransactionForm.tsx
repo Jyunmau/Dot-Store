@@ -107,6 +107,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ transaction, onSucces
       form={form}
       layout="vertical"
       onFinish={handleSubmit}
+      preserve={false}
       initialValues={{
         type: 'income',
       }}

@@ -207,12 +207,13 @@ const TransactionCategoryManagePage: React.FC = () => {
           form.resetFields();
         }}
         footer={null}
-        destroyOnClose
+        destroyOnHidden
       >
         <Form
           form={form}
           layout="vertical"
           onFinish={handleSubmit}
+          preserve={false}
           initialValues={{
             type: 'income',
           }}

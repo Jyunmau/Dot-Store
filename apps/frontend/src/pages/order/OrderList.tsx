@@ -321,7 +321,7 @@ const OrderListPage: React.FC = () => {
         }}
         footer={null}
         width={600}
-        destroyOnClose
+        destroyOnHidden
       >
         <OrderForm
           order={editingOrder}

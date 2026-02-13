@@ -60,6 +60,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ order, onSuccess, onCancel }) => 
       form={form}
       layout="vertical"
       onFinish={handleSubmit}
+      preserve={false}
       initialValues={{
         order_type: 'dine_in',
         status: 'recorded',
