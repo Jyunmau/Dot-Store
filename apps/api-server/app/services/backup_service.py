@@ -68,11 +68,13 @@ class BackupService:
                     "order_type": o.order_type,
                     "category_id": o.category_id,
                     "tags": o.tags,
-                    "note": o.note,
+                    "order_metadata": o.order_metadata,
                     "status": o.status,
+                    "is_deleted": o.is_deleted,
                     "created_at": o.created_at.isoformat() if o.created_at else None,
                     "updated_at": o.updated_at.isoformat() if o.updated_at else None,
                     "deleted_at": o.deleted_at.isoformat() if o.deleted_at else None,
+                    "created_by": o.created_by,
                 }
                 for o in orders
             ],
@@ -81,9 +83,8 @@ class BackupService:
                     "id": c.id,
                     "name": c.name,
                     "description": c.description,
-                    "sort_order": c.sort_order,
-                    "is_active": c.is_active,
                     "created_at": c.created_at.isoformat() if c.created_at else None,
+                    "updated_at": c.updated_at.isoformat() if c.updated_at else None,
                 }
                 for c in order_categories
             ],
@@ -91,13 +92,14 @@ class BackupService:
                 {
                     "id": t.id,
                     "amount": float(t.amount) if t.amount else 0,
-                    "transaction_type": t.transaction_type,
-                    "category_id": t.category_id,
+                    "type": t.type,
+                    "category": t.category,
+                    "order_id": t.order_id,
                     "note": t.note,
-                    "attachment": t.attachment,
-                    "transaction_date": t.transaction_date.isoformat() if t.transaction_date else None,
+                    "attachment_url": t.attachment_url,
                     "created_at": t.created_at.isoformat() if t.created_at else None,
                     "updated_at": t.updated_at.isoformat() if t.updated_at else None,
+                    "created_by": t.created_by,
                 }
                 for t in transactions
             ],
@@ -105,11 +107,10 @@ class BackupService:
                 {
                     "id": c.id,
                     "name": c.name,
-                    "category_type": c.category_type,
+                    "type": c.type,
                     "description": c.description,
-                    "sort_order": c.sort_order,
-                    "is_active": c.is_active,
                     "created_at": c.created_at.isoformat() if c.created_at else None,
+                    "updated_at": c.updated_at.isoformat() if c.updated_at else None,
                 }
                 for c in transaction_categories
             ],
@@ -280,9 +281,8 @@ class BackupService:
                     user_id=user_id,
                     name=cat_data["name"],
                     description=cat_data.get("description"),
-                    sort_order=cat_data.get("sort_order", 0),
-                    is_active=cat_data.get("is_active", True),
                     created_at=datetime.fromisoformat(cat_data["created_at"]) if cat_data.get("created_at") else None,
+                    updated_at=datetime.fromisoformat(cat_data["updated_at"]) if cat_data.get("updated_at") else None,
                 )
                 self.db.merge(category)
                 restored_counts["order_categories"] += 1
@@ -295,11 +295,13 @@ class BackupService:
                     order_type=order_data.get("order_type"),
                     category_id=order_data.get("category_id"),
                     tags=order_data.get("tags"),
-                    note=order_data.get("note"),
-                    status=order_data.get("status", "completed"),
+                    order_metadata=order_data.get("order_metadata"),
+                    status=order_data.get("status", "recorded"),
+                    is_deleted=order_data.get("is_deleted", False),
                     created_at=datetime.fromisoformat(order_data["created_at"]) if order_data.get("created_at") else None,
                     updated_at=datetime.fromisoformat(order_data["updated_at"]) if order_data.get("updated_at") else None,
                     deleted_at=datetime.fromisoformat(order_data["deleted_at"]) if order_data.get("deleted_at") else None,
+                    created_by=order_data.get("created_by", user_id),
                 )
                 self.db.merge(order)
                 restored_counts["orders"] += 1
@@ -309,11 +311,10 @@ class BackupService:
                     id=cat_data["id"],
                     user_id=user_id,
                     name=cat_data["name"],
-                    category_type=cat_data.get("category_type", "income"),
+                    type=cat_data.get("type", "income"),
                     description=cat_data.get("description"),
-                    sort_order=cat_data.get("sort_order", 0),
-                    is_active=cat_data.get("is_active", True),
                     created_at=datetime.fromisoformat(cat_data["created_at"]) if cat_data.get("created_at") else None,
+                    updated_at=datetime.fromisoformat(cat_data["updated_at"]) if cat_data.get("updated_at") else None,
                 )
                 self.db.merge(category)
                 restored_counts["transaction_categories"] += 1
@@ -323,13 +324,14 @@ class BackupService:
                     id=trans_data["id"],
                     user_id=user_id,
                     amount=trans_data["amount"],
-                    transaction_type=trans_data.get("transaction_type", "income"),
-                    category_id=trans_data.get("category_id"),
+                    type=trans_data.get("type", "income"),
+                    category=trans_data.get("category"),
+                    order_id=trans_data.get("order_id"),
                     note=trans_data.get("note"),
-                    attachment=trans_data.get("attachment"),
-                    transaction_date=datetime.fromisoformat(trans_data["transaction_date"]) if trans_data.get("transaction_date") else None,
+                    attachment_url=trans_data.get("attachment_url"),
                     created_at=datetime.fromisoformat(trans_data["created_at"]) if trans_data.get("created_at") else None,
                     updated_at=datetime.fromisoformat(trans_data["updated_at"]) if trans_data.get("updated_at") else None,
+                    created_by=trans_data.get("created_by", user_id),
                 )
                 self.db.merge(transaction)
                 restored_counts["transactions"] += 1

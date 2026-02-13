@@ -13,6 +13,7 @@ import { TransactionListPage, TransactionCategoryManagePage } from '@/pages/tran
 import { ReportPage } from '@/pages/report';
 import { StockPage } from '@/pages/stock';
 import { MemberListPage, PointsRecordPage, PointsExchangePage } from '@/pages/member';
+import { BackupManagePage, BackupSettingsPage } from '@/pages/backup';
 import { MainLayout } from '@/components/Layout';
 
 /**
@@ -81,6 +82,8 @@ const App: React.FC = () => {
               <Route path="members" element={<MemberListPage />} />
               <Route path="members/points" element={<PointsRecordPage />} />
               <Route path="members/exchange" element={<PointsExchangePage />} />
+              <Route path="backup" element={<BackupManagePage />} />
+              <Route path="backup/settings" element={<BackupSettingsPage />} />
               <Route path="setting/staff" element={<StaffManagementPage />} />
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />

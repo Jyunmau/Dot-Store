@@ -19,6 +19,8 @@ import {
   TrophyOutlined,
   SwapOutlined,
   InboxOutlined,
+  CloudServerOutlined,
+  SettingOutlined,
 } from '@ant-design/icons';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/store/authStore';
@@ -116,6 +118,19 @@ const MainLayout: React.FC = () => {
       key: '/members/exchange',
       icon: <SwapOutlined />,
       label: '积分兑换',
+    },
+    {
+      type: 'divider' as const,
+    },
+    {
+      key: '/backup',
+      icon: <CloudServerOutlined />,
+      label: '备份管理',
+    },
+    {
+      key: '/backup/settings',
+      icon: <SettingOutlined />,
+      label: '备份设置',
     },
   ];
 

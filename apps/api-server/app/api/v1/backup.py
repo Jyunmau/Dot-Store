@@ -22,7 +22,7 @@ from app.services.backup_service import BackupService
 router = APIRouter(prefix="/backups", tags=["备份管理"])
 
 
-@router.post("", response_model=dict, summary="创建备份")
+@router.post("", response_model=BackupResponse, summary="创建备份")
 async def create_backup(
     backup_data: BackupCreate,
     db: Session = Depends(get_db),
@@ -36,15 +36,10 @@ async def create_backup(
     """
     service = BackupService(db)
     backup = service.create_backup(current_user.id, backup_data)
-    
-    return {
-        "code": 200,
-        "message": "备份创建成功",
-        "data": BackupResponse.model_validate(backup)
-    }
+    return BackupResponse.model_validate(backup)
 
 
-@router.get("", response_model=dict, summary="获取备份列表")
+@router.get("", response_model=List[BackupListResponse], summary="获取备份列表")
 async def get_backups(
     skip: int = 0,
     limit: int = 100,
@@ -59,15 +54,10 @@ async def get_backups(
     """
     service = BackupService(db)
     backups = service.get_backups(current_user.id, skip, limit)
-    
-    return {
-        "code": 200,
-        "message": "获取成功",
-        "data": [BackupListResponse.model_validate(b) for b in backups]
-    }
+    return [BackupListResponse.model_validate(b) for b in backups]
 
 
-@router.get("/{backup_id}", response_model=dict, summary="获取备份详情")
+@router.get("/{backup_id}", response_model=BackupResponse, summary="获取备份详情")
 async def get_backup(
     backup_id: int,
     db: Session = Depends(get_db),
@@ -80,15 +70,10 @@ async def get_backup(
     """
     service = BackupService(db)
     backup = service.get_backup(current_user.id, backup_id)
-    
-    return {
-        "code": 200,
-        "message": "获取成功",
-        "data": BackupResponse.model_validate(backup)
-    }
+    return BackupResponse.model_validate(backup)
 
 
-@router.delete("/{backup_id}", response_model=dict, summary="删除备份")
+@router.delete("/{backup_id}", summary="删除备份")
 async def delete_backup(
     backup_id: int,
     db: Session = Depends(get_db),
@@ -101,12 +86,7 @@ async def delete_backup(
     """
     service = BackupService(db)
     service.delete_backup(current_user.id, backup_id)
-    
-    return {
-        "code": 200,
-        "message": "备份删除成功",
-        "data": None
-    }
+    return {"message": "备份删除成功"}
 
 
 @router.get("/{backup_id}/download", summary="下载备份文件")
@@ -124,7 +104,7 @@ async def download_backup(
     return service.download_backup(current_user.id, backup_id)
 
 
-@router.post("/{backup_id}/restore", response_model=dict, summary="恢复备份")
+@router.post("/{backup_id}/restore", summary="恢复备份")
 async def restore_backup(
     backup_id: int,
     db: Session = Depends(get_db),
@@ -139,18 +119,13 @@ async def restore_backup(
     """
     service = BackupService(db)
     result = service.restore_backup(current_user.id, backup_id)
-    
-    return {
-        "code": 200,
-        "message": "备份恢复成功",
-        "data": result
-    }
+    return result
 
 
 settings_router = APIRouter(prefix="/backup-settings", tags=["备份设置"])
 
 
-@settings_router.get("", response_model=dict, summary="获取备份设置")
+@settings_router.get("", response_model=BackupSettingsResponse, summary="获取备份设置")
 async def get_backup_settings(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
@@ -160,15 +135,10 @@ async def get_backup_settings(
     """
     service = BackupService(db)
     settings = service.get_backup_settings(current_user.id)
-    
-    return {
-        "code": 200,
-        "message": "获取成功",
-        "data": BackupSettingsResponse.model_validate(settings)
-    }
+    return BackupSettingsResponse.model_validate(settings)
 
 
-@settings_router.put("", response_model=dict, summary="更新备份设置")
+@settings_router.put("", response_model=BackupSettingsResponse, summary="更新备份设置")
 async def update_backup_settings(
     settings_data: BackupSettingsUpdate,
     db: Session = Depends(get_db),
@@ -183,9 +153,4 @@ async def update_backup_settings(
     """
     service = BackupService(db)
     settings = service.update_backup_settings(current_user.id, settings_data)
-    
-    return {
-        "code": 200,
-        "message": "备份设置更新成功",
-        "data": BackupSettingsResponse.model_validate(settings)
-    }
+    return BackupSettingsResponse.model_validate(settings)
