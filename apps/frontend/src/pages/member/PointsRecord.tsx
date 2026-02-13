@@ -19,6 +19,7 @@ import {
 import {
   PlusOutlined,
   MinusOutlined,
+  ReloadOutlined,
 } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
@@ -134,13 +135,20 @@ const PointsRecordPage: React.FC = () => {
 
   useEffect(() => {
     listMembers({ page_size: 100 });
-  }, [listMembers]);
+  }, []);
 
   useEffect(() => {
     if (selectedMemberId) {
+      getPointsRecords(selectedMemberId, 1, 10);
+    }
+  }, [selectedMemberId]);
+
+  const handleRefresh = () => {
+    listMembers({ page_size: 100 });
+    if (selectedMemberId) {
       getPointsRecords(selectedMemberId, page, pageSize);
     }
-  }, [selectedMemberId, page, pageSize, getPointsRecords]);
+  };
 
   /**
    * 处理会员选择变化
@@ -217,7 +225,17 @@ const PointsRecordPage: React.FC = () => {
 
   return (
     <div className="p-6">
-      <Card title="积分记录">
+      <Card
+        title="积分记录"
+        extra={
+          <Button
+            icon={<ReloadOutlined />}
+            onClick={handleRefresh}
+          >
+            刷新
+          </Button>
+        }
+      >
         <div className="mb-4">
           <Space size="middle" wrap>
             <Select

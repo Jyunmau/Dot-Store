@@ -16,6 +16,7 @@ import {
 } from 'antd';
 import {
   SwapOutlined,
+  ReloadOutlined,
 } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
@@ -141,8 +142,13 @@ const PointsExchangePage: React.FC = () => {
 
   useEffect(() => {
     listMembers({ page_size: 100 });
+    getExchanges(1, 10);
+  }, []);
+
+  const handleRefresh = () => {
     getExchanges(page, pageSize);
-  }, [listMembers, getExchanges, page, pageSize]);
+    listMembers({ page_size: 100 });
+  };
 
   /**
    * 处理分页变化
@@ -206,13 +212,21 @@ const PointsExchangePage: React.FC = () => {
       <Card
         title="积分兑换"
         extra={
-          <Button
-            type="primary"
-            icon={<SwapOutlined />}
-            onClick={() => setIsModalOpen(true)}
-          >
-            积分兑换
-          </Button>
+          <Space>
+            <Button
+              icon={<ReloadOutlined />}
+              onClick={handleRefresh}
+            >
+              刷新
+            </Button>
+            <Button
+              type="primary"
+              icon={<SwapOutlined />}
+              onClick={() => setIsModalOpen(true)}
+            >
+              积分兑换
+            </Button>
+          </Space>
         }
       >
         <Table

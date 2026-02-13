@@ -140,7 +140,7 @@ const MemberListPage: React.FC = () => {
 
   useEffect(() => {
     listMembers(filters);
-  }, [filters, listMembers]);
+  }, [filters]);
 
   /**
    * 处理删除会员
