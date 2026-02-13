@@ -157,7 +157,19 @@ async def record_stock_in(
             detail="食材不存在"
         )
     
-    return StockRecordResponse.model_validate(record)
+    ingredient = stock_service.get_ingredient(data.ingredient_id, current_user.id)
+    record_dict = {
+        "id": record.id,
+        "ingredient_id": record.ingredient_id,
+        "user_id": record.user_id,
+        "type": record.type,
+        "quantity": record.quantity,
+        "note": record.note,
+        "created_at": record.created_at,
+        "ingredient_name": ingredient.name if ingredient else None,
+        "ingredient_unit": ingredient.unit if ingredient else None,
+    }
+    return StockRecordResponse.model_validate(record_dict)
 
 
 @router.post("/records/out", response_model=StockRecordResponse, summary="记录库存出库")
@@ -182,7 +194,19 @@ async def record_stock_out(
             detail="食材不存在或库存不足"
         )
     
-    return StockRecordResponse.model_validate(record)
+    ingredient = stock_service.get_ingredient(data.ingredient_id, current_user.id)
+    record_dict = {
+        "id": record.id,
+        "ingredient_id": record.ingredient_id,
+        "user_id": record.user_id,
+        "type": record.type,
+        "quantity": record.quantity,
+        "note": record.note,
+        "created_at": record.created_at,
+        "ingredient_name": ingredient.name if ingredient else None,
+        "ingredient_unit": ingredient.unit if ingredient else None,
+    }
+    return StockRecordResponse.model_validate(record_dict)
 
 
 @router.get("/records", response_model=StockRecordListResponse, summary="获取库存记录列表")

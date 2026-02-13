@@ -18,6 +18,7 @@ import {
   TeamOutlined,
   TrophyOutlined,
   SwapOutlined,
+  InboxOutlined,
 } from '@ant-design/icons';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/store/authStore';
@@ -89,6 +90,14 @@ const MainLayout: React.FC = () => {
       key: '/reports',
       icon: <BarChartOutlined />,
       label: '经营报表',
+    },
+    {
+      type: 'divider' as const,
+    },
+    {
+      key: '/stock',
+      icon: <InboxOutlined />,
+      label: '库存管理',
     },
     {
       type: 'divider' as const,
