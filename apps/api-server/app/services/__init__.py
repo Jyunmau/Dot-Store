@@ -7,6 +7,7 @@ from .order_service import OrderService
 from .order_category_service import OrderCategoryService
 from .transaction_service import TransactionService
 from .transaction_category_service import TransactionCategoryService
+from .report_service import ReportService
 
 __all__ = [
     "AuthService",
@@ -15,4 +16,5 @@ __all__ = [
     "OrderCategoryService",
     "TransactionService",
     "TransactionCategoryService",
+    "ReportService",
 ]

@@ -14,6 +14,7 @@ import {
   MenuUnfoldOutlined,
   DollarOutlined,
   WalletOutlined,
+  BarChartOutlined,
 } from '@ant-design/icons';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/store/authStore';
@@ -77,6 +78,14 @@ const MainLayout: React.FC = () => {
       key: '/transactions/categories',
       icon: <WalletOutlined />,
       label: '收支分类',
+    },
+    {
+      type: 'divider' as const,
+    },
+    {
+      key: '/reports',
+      icon: <BarChartOutlined />,
+      label: '经营报表',
     },
   ];
 

@@ -10,6 +10,9 @@ import { LoginPage, RegisterPage } from '@/pages/auth';
 import { StaffManagementPage } from '@/pages/setting';
 import { OrderListPage, OrderRecyclePage, CategoryManagePage, TagManagePage } from '@/pages/order';
 import { TransactionListPage, TransactionCategoryManagePage } from '@/pages/transaction';
+import { ReportPage } from '@/pages/report';
+import { StockPage } from '@/pages/stock';
+import { MemberListPage, PointsRecordPage, PointsExchangePage } from '@/pages/member';
 import { MainLayout } from '@/components/Layout';
 
 /**
@@ -73,6 +76,11 @@ const App: React.FC = () => {
               <Route path="orders/tags" element={<TagManagePage />} />
               <Route path="transactions" element={<TransactionListPage />} />
               <Route path="transactions/categories" element={<TransactionCategoryManagePage />} />
+              <Route path="reports" element={<ReportPage />} />
+              <Route path="stock/*" element={<StockPage />} />
+              <Route path="members" element={<MemberListPage />} />
+              <Route path="members/points" element={<PointsRecordPage />} />
+              <Route path="members/exchange" element={<PointsExchangePage />} />
               <Route path="setting/staff" element={<StaffManagementPage />} />
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />

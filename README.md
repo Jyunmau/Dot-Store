@@ -138,6 +138,12 @@ npm run dev
 - ✅ 收支列表查看（按日期、类型、分类筛选）
 - ✅ 收支汇总统计（总收入、总支出、净利润）
 
+### Sprint 5: 库存管理模块
+- ✅ 食材管理（添加/编辑/删除食材）
+- ✅ 库存记录（入库/出库记录）
+- ✅ 库存预警（库存低于阈值时预警）
+- ✅ 库存统计（食材总数、预警数量统计）
+
 ## API接口
 
 ### 认证接口
@@ -212,6 +218,20 @@ npm run dev
 | 方法 | 路径 | 说明 |
 |------|------|------|
 | POST | /api/v1/upload/attachment | 上传凭证图片 |
+
+### 库存管理接口
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| POST | /api/v1/stock/ingredients | 创建食材 |
+| GET | /api/v1/stock/ingredients | 获取食材列表 |
+| GET | /api/v1/stock/ingredients/{id} | 获取食材详情 |
+| PUT | /api/v1/stock/ingredients/{id} | 更新食材 |
+| DELETE | /api/v1/stock/ingredients/{id} | 删除食材 |
+| POST | /api/v1/stock/records/in | 记录库存入库 |
+| POST | /api/v1/stock/records/out | 记录库存出库 |
+| GET | /api/v1/stock/records | 获取库存记录列表 |
+| GET | /api/v1/stock/warnings | 获取库存预警列表 |
+| GET | /api/v1/stock/summary | 获取库存统计 |
 
 ## 开发规范
 
