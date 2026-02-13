@@ -36,7 +36,7 @@ class ExportRequest(BaseModel):
 
 @router.get("/daily", summary="获取每日报表")
 async def get_daily_report(
-    report_date: Optional[str] = Query(None, description="报表日期(YYYY-MM-DD)，默认为今天"),
+    date_param: Optional[str] = Query(None, alias="date", description="报表日期(YYYY-MM-DD)，默认为今天"),
     current_user: User = Depends(get_current_active_user),
     db: Session = Depends(get_db),
 ):
@@ -50,9 +50,9 @@ async def get_daily_report(
     report_service = ReportService(db)
     
     parsed_date = None
-    if report_date:
+    if date_param:
         try:
-            parsed_date = date.fromisoformat(report_date)
+            parsed_date = date.fromisoformat(date_param)
         except ValueError:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
