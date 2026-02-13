@@ -138,6 +138,14 @@ npm run dev
 - ✅ 收支列表查看（按日期、类型、分类筛选）
 - ✅ 收支汇总统计（总收入、总支出、净利润）
 
+### Sprint 4: 报表功能模块
+- ✅ 今日报表（今日订单、收入、支出、利润）
+- ✅ 本周报表（本周订单、收入、支出、利润、每日趋势）
+- ✅ 本月报表（本月订单、收入、支出、利润、每周趋势）
+- ✅ 自定义报表（自定义日期范围、类型筛选、分类筛选）
+- ✅ 报表导出（导出Excel格式）
+- ✅ 分类分析（按订单类型、收支类型分析）
+
 ### Sprint 5: 库存管理模块
 - ✅ 食材管理（添加/编辑/删除食材）
 - ✅ 库存记录（入库/出库记录）
@@ -218,6 +226,17 @@ npm run dev
 | 方法 | 路径 | 说明 |
 |------|------|------|
 | POST | /api/v1/upload/attachment | 上传凭证图片 |
+
+### 报表接口
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET | /api/v1/reports/daily | 获取每日报表 |
+| GET | /api/v1/reports/weekly | 获取每周报表 |
+| GET | /api/v1/reports/monthly | 获取每月报表 |
+| POST | /api/v1/reports/custom | 获取自定义报表 |
+| GET | /api/v1/reports/category-analysis | 获取分类分析 |
+| POST | /api/v1/reports/export/excel | 导出报表为Excel |
+| POST | /api/v1/reports/export/pdf | 导出报表为PDF |
 
 ### 库存管理接口
 | 方法 | 路径 | 说明 |

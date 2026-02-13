@@ -23,5 +23,8 @@ pydantic==2.5.3
 pydantic-settings==2.1.0
 email-validator==2.1.0
 
+# 报表导出
+openpyxl==3.1.2
+
 # 工具
 python-dotenv==1.0.0
