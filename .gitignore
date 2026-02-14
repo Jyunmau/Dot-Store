@@ -16,41 +16,127 @@ node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+.pnpm-debug.log*
+package-lock.json
+yarn.lock
 
-# Build
+# 构建输出目录
 dist/
 build/
+out/
+.next/
+.nuxt/
+.cache/
+.parcel-cache/
 *.egg
 
-# IDE
+# IDE和编辑器配置
 .idea/
 .vscode/
 *.swp
 *.swo
 *~
+*.sublime-project
+*.sublime-workspace
+.vs/
+.history/
+*.code-workspace
 
-# OS
+# 操作系统生成的文件
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
+desktop.ini
+*.lnk
 
-# Environment
+# 环境变量配置文件
 .env
 .env.local
 .env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
 
-# Logs
+# 日志文件
 logs/
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
 
-# Test
+# 数据库文件
+*.db
+*.sqlite
+*.sqlite3
+*.db3
+*.mdb
+*.accdb
+
+# 备份和上传目录
+backups/
+uploads/
+_backup/
+_upload/
+
+# 以点或下划线开头的文件夹
+.*/
+_*/
+
+# 测试相关文件和目录
 .coverage
+.coverage.*
 htmlcov/
 .pytest_cache/
+.tox/
+.nyc_output/
+test-results/
+coverage/
+*.test.js.snap
 
-# Database
-*.db
-*.sqlite3
+# 压缩文件和归档文件
+*.zip
+*.tar
+*.tar.gz
+*.tar.bz2
+*.rar
+*.7z
+*.iso
 
-# Misc
+# 临时文件
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*~
+.cache/
+tmp/
+temp/
+
+# 依赖管理目录
+vendor/
+bower_components/
+
+# 错误报告和调试文件
+*.stackdump
+*.pid
+*.seed
+*.pid.lock
+
+# 部署相关
+deploy/
+*.pem
+*.key
+*.crt
+
+# 其他
 *.bak
 *.tmp
+*.old
+*.orig
+*.rej
