@@ -1,3 +1,4 @@
+/* tailwindcss 指令 - PostCSS 编译器会自动处理 */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -45,7 +46,7 @@ body {
   /* 优化触摸滚动 */
   .touch-scroll {
     -webkit-overflow-scrolling: touch;
-    overflow-scrolling: touch;
+    scroll-behavior: smooth;
   }
   
   /* 安全区域适配 */
