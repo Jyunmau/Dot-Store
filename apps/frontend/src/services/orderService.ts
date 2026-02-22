@@ -1,17 +1,22 @@
 /**
- * 订单API服务
+ * Dot-Store V2.2 订单服务
  */
 import apiClient from './apiClient';
 import type {
   Order,
-  OrderCategory,
+  OrderDetail,
   OrderCreateParams,
   OrderUpdateParams,
-  OrderCategoryCreateParams,
-  OrderCategoryUpdateParams,
   OrderFilters,
   OrderListResponse,
-} from '@/types/order';
+  OrderCategory,
+  OrderCategoryCreateParams,
+  OrderCategoryUpdateParams,
+  OrderItem,
+  OrderItemCreateParams,
+  OrderSummary,
+  OrderVoidParams,
+} from '../types/order';
 
 /**
  * 订单服务对象
@@ -31,8 +36,8 @@ export const orderService = {
   listOrders: async (filters?: OrderFilters): Promise<OrderListResponse> => {
     const params = new URLSearchParams();
     if (filters) {
-      if (filters.start_date) params.append('start_date', filters.start_date);
-      if (filters.end_date) params.append('end_date', filters.end_date);
+      if (filters.start_date) params.append('start_date', filters.start_date.split('T')[0]);
+      if (filters.end_date) params.append('end_date', filters.end_date.split('T')[0]);
       if (filters.order_type) params.append('order_type', filters.order_type);
       if (filters.category_id) params.append('category_id', String(filters.category_id));
       if (filters.status) params.append('status', filters.status);
@@ -47,8 +52,8 @@ export const orderService = {
   /**
    * 获取订单详情
    */
-  getOrder: async (orderId: number): Promise<Order> => {
-    const response = await apiClient.get<Order>(`/orders/${orderId}`);
+  getOrder: async (orderId: number): Promise<OrderDetail> => {
+    const response = await apiClient.get<OrderDetail>(`/orders/${orderId}`);
     return response.data;
   },
 
@@ -61,7 +66,15 @@ export const orderService = {
   },
 
   /**
-   * 删除订单
+   * 作废订单 - V2.2新增
+   */
+  voidOrder: async (orderId: number, reason: string): Promise<Order> => {
+    const response = await apiClient.post<Order>(`/orders/${orderId}/void`, { reason });
+    return response.data;
+  },
+
+  /**
+   * 删除订单（移入回收站）
    */
   deleteOrder: async (orderId: number): Promise<void> => {
     await apiClient.delete(`/orders/${orderId}`);
@@ -83,6 +96,37 @@ export const orderService = {
       `/orders/recycle?page=${page}&page_size=${pageSize}`
     );
     return response.data;
+  },
+
+  /**
+   * 获取今日汇总 - V2.2新增
+   */
+  getTodaySummary: async (): Promise<OrderSummary> => {
+    const response = await apiClient.get<OrderSummary>('/orders/today/summary');
+    return response.data;
+  },
+
+  /**
+   * 获取订单项列表 - V2.2新增
+   */
+  getOrderItems: async (orderId: number): Promise<OrderItem[]> => {
+    const response = await apiClient.get<OrderItem[]>(`/orders/${orderId}/items`);
+    return response.data;
+  },
+
+  /**
+   * 添加订单项 - V2.2新增
+   */
+  addOrderItem: async (orderId: number, data: OrderItemCreateParams): Promise<OrderItem> => {
+    const response = await apiClient.post<OrderItem>(`/orders/${orderId}/items`, data);
+    return response.data;
+  },
+
+  /**
+   * 删除订单项 - V2.2新增
+   */
+  deleteOrderItem: async (orderId: number, itemId: number): Promise<void> => {
+    await apiClient.delete(`/orders/${orderId}/items/${itemId}`);
   },
 
   /**
@@ -156,3 +200,5 @@ export const orderService = {
     return response.data;
   },
 };
+
+export default orderService;

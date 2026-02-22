@@ -1,33 +1,30 @@
 /**
- * 主布局组件
+ * Dot-Store V2.2 主布局组件
  * 支持响应式布局：移动端底部导航，桌面端侧边导航
  */
 import React, { useState, useEffect } from 'react';
 import { Layout, Menu, Avatar, Dropdown, Button, Space, Drawer } from 'antd';
 import {
-  OrderedListOutlined,
-  DeleteOutlined,
-  TagsOutlined,
-  AppstoreOutlined,
+  DashboardOutlined,
+  FileTextOutlined,
+  BulbOutlined,
+  BarChartOutlined,
+  SettingOutlined,
   LogoutOutlined,
   UserOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
+  OrderedListOutlined,
   DollarOutlined,
-  WalletOutlined,
-  BarChartOutlined,
-  TeamOutlined,
-  TrophyOutlined,
-  SwapOutlined,
   InboxOutlined,
-  DatabaseOutlined,
+  HistoryOutlined,
   WarningOutlined,
-  CloudServerOutlined,
-  SettingOutlined,
-  HomeOutlined,
-  MenuOutlined,
   BellOutlined,
   UsergroupAddOutlined,
+  MenuOutlined,
+  SafetyCertificateOutlined,
+  TeamOutlined,
+  CloudServerOutlined,
 } from '@ant-design/icons';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/store/authStore';
@@ -84,23 +81,23 @@ const MainLayout: React.FC = () => {
   };
 
   /**
-   * 底部导航项
+   * V2.2 底部导航项
    */
   const bottomNavItems = [
     {
       key: '/',
-      icon: <HomeOutlined />,
-      label: '首页',
+      icon: <DashboardOutlined />,
+      label: '仪表盘',
     },
     {
-      key: '/orders',
-      icon: <OrderedListOutlined />,
-      label: '订单',
+      key: '/records/orders',
+      icon: <FileTextOutlined />,
+      label: '记录',
     },
     {
-      key: '/transactions',
-      icon: <DollarOutlined />,
-      label: '收支',
+      key: '/insights/income',
+      icon: <BulbOutlined />,
+      label: '洞察',
     },
     {
       key: '/reports',
@@ -115,67 +112,141 @@ const MainLayout: React.FC = () => {
   ];
 
   /**
-   * 侧边菜单项
+   * V2.2 侧边菜单项
    */
   const menuItems = [
     {
-      key: '/orders',
-      icon: <OrderedListOutlined />,
-      label: '订单列表',
-    },
-    {
-      key: '/orders/recycle',
-      icon: <DeleteOutlined />,
-      label: '回收站',
-    },
-    {
-      key: '/orders/categories',
-      icon: <AppstoreOutlined />,
-      label: '订单分类',
-    },
-    {
-      key: '/orders/tags',
-      icon: <TagsOutlined />,
-      label: '订单标签',
+      key: '/',
+      icon: <DashboardOutlined />,
+      label: '仪表盘',
     },
     {
       type: 'divider' as const,
     },
     {
-      key: '/transactions',
-      icon: <DollarOutlined />,
-      label: '收支记录',
-    },
-    {
-      key: '/transactions/categories',
-      icon: <WalletOutlined />,
-      label: '收支分类',
+      key: 'records',
+      icon: <FileTextOutlined />,
+      label: '记录',
+      children: [
+        {
+          key: '/records/orders',
+          icon: <OrderedListOutlined />,
+          label: '订单',
+        },
+        {
+          key: '/records/transactions',
+          icon: <DollarOutlined />,
+          label: '收支',
+        },
+        {
+          key: '/records/stock',
+          icon: <InboxOutlined />,
+          label: '库存',
+        },
+      ],
     },
     {
       type: 'divider' as const,
     },
     {
-      key: '/reports',
+      key: 'insights',
+      icon: <BulbOutlined />,
+      label: '洞察',
+      children: [
+        {
+          key: '/insights/income',
+          icon: <DollarOutlined />,
+          label: '钱从哪里来',
+        },
+        {
+          key: '/insights/cost',
+          icon: <BarChartOutlined />,
+          label: '钱花哪里了',
+        },
+        {
+          key: '/insights/profit',
+          icon: <SafetyCertificateOutlined />,
+          label: '什么时候赚钱',
+        },
+        {
+          key: '/insights/cashflow',
+          icon: <HistoryOutlined />,
+          label: '未来剩多少',
+        },
+      ],
+    },
+    {
+      type: 'divider' as const,
+    },
+    {
+      key: 'reports',
       icon: <BarChartOutlined />,
-      label: '经营报表',
+      label: '报表',
+      children: [
+        {
+          key: '/reports/daily',
+          icon: <FileTextOutlined />,
+          label: '日报',
+        },
+        {
+          key: '/reports/weekly',
+          icon: <FileTextOutlined />,
+          label: '周报',
+        },
+        {
+          key: '/reports/monthly',
+          icon: <FileTextOutlined />,
+          label: '月报',
+        },
+      ],
     },
     {
       type: 'divider' as const,
-    },
-    {
-      key: '/stock/ingredients',
-      icon: <InboxOutlined />,
-      label: '食材管理',
-    },
-    {
-      key: '/stock/records',
-      icon: <DatabaseOutlined />,
-      label: '库存记录',
     },
     {
       key: '/stock/warnings',
       icon: <WarningOutlined />,
       label: '库存预警',
+    },
+    {
+      key: '/stock/transactions',
+      icon: <HistoryOutlined />,
+      label: '库存流水',
+    },
+    {
+      key: '/events',
+      icon: <HistoryOutlined />,
+      label: '事件日志',
+    },
+    {
+      type: 'divider' as const,
+    },
+    {
+      key: 'settings',
+      icon: <SettingOutlined />,
+      label: '设置',
+      children: [
+        {
+          key: '/settings/profile',
+          icon: <UserOutlined />,
+          label: '用户信息',
+        },
+        {
+          key: '/settings/shop',
+          icon: <DashboardOutlined />,
+          label: '店铺信息',
+        },
+        {
+          key: '/settings/notification',
+          icon: <BellOutlined />,
+          label: '提醒设置',
+        },
+        {
+          key: '/settings/staff',
+          icon: <UsergroupAddOutlined />,
+          label: '店员管理',
+        },
+      ],
     },
     {
       type: 'divider' as const,
@@ -186,40 +257,9 @@ const MainLayout: React.FC = () => {
       label: '会员管理',
     },
     {
-      key: '/members/points',
-      icon: <TrophyOutlined />,
-      label: '积分记录',
-    },
-    {
-      key: '/members/exchange',
-      icon: <SwapOutlined />,
-      label: '积分兑换',
-    },
-    {
-      type: 'divider' as const,
-    },
-    {
       key: '/backup',
       icon: <CloudServerOutlined />,
       label: '备份管理',
-    },
-    {
-      key: '/backup/settings',
-      icon: <SettingOutlined />,
-      label: '备份设置',
-    },
-    {
-      type: 'divider' as const,
-    },
-    {
-      key: '/setting/staff',
-      icon: <UsergroupAddOutlined />,
-      label: '店员管理',
-    },
-    {
-      key: '/setting/notification',
-      icon: <BellOutlined />,
-      label: '通知设置',
     },
   ];
 
@@ -249,6 +289,26 @@ const MainLayout: React.FC = () => {
   };
 
   /**
+   * 获取当前选中的菜单键
+   */
+  const getSelectedKeys = () => {
+    const path = location.pathname;
+    return [path];
+  };
+
+  /**
+   * 获取默认展开的菜单键
+   */
+  const getDefaultOpenKeys = () => {
+    const path = location.pathname;
+    if (path.startsWith('/records')) return ['records'];
+    if (path.startsWith('/insights')) return ['insights'];
+    if (path.startsWith('/reports')) return ['reports'];
+    if (path.startsWith('/settings')) return ['settings'];
+    return [];
+  };
+
+  /**
    * 移动端布局
    */
   if (isMobile) {
@@ -268,7 +328,7 @@ const MainLayout: React.FC = () => {
           }}
         >
           <h1 style={{ margin: 0, fontSize: 18, fontWeight: 'bold', color: '#1890ff' }}>
-            Dot Store
+            Dot Store V2.2
           </h1>
           <div className="flex items-center gap-3">
             <NetworkStatus />
@@ -344,7 +404,8 @@ const MainLayout: React.FC = () => {
         >
           <Menu
             mode="inline"
-            selectedKeys={[location.pathname]}
+            selectedKeys={getSelectedKeys()}
+            defaultOpenKeys={getDefaultOpenKeys()}
             items={menuItems}
             onClick={handleMenuClick}
             style={{ borderRight: 0 }}
@@ -364,6 +425,7 @@ const MainLayout: React.FC = () => {
         collapsible
         collapsed={collapsed}
         theme="light"
+        width={240}
         style={{
           boxShadow: '2px 0 8px rgba(0, 0, 0, 0.1)',
         }}
@@ -386,12 +448,13 @@ const MainLayout: React.FC = () => {
               whiteSpace: 'nowrap',
             }}
           >
-            {collapsed ? 'Dot' : 'Dot Store'}
+            {collapsed ? 'Dot' : 'Dot Store V2.2'}
           </h1>
         </div>
         <Menu
           mode="inline"
-          selectedKeys={[location.pathname]}
+          selectedKeys={getSelectedKeys()}
+          defaultOpenKeys={getDefaultOpenKeys()}
           items={menuItems}
           onClick={handleMenuClick}
           style={{ borderRight: 0 }}
