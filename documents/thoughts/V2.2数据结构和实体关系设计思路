@@ -1,0 +1,737 @@
+项目的目标是：
+
+1 年内盈亏平衡 + 3 年构建经营确定性基础设施
+
+那数据库设计必须满足 4 个原则：
+	1.	财务强一致性（可审计）
+	2.	事件驱动可追溯
+	3.	支持未来 AI 推理
+	4.	可演进（不推翻重来）
+
+下面是 Dot-Store V1 数据库结构设计（核心经营安全系统版）。
+
+⸻
+
+一、总体架构设计思路
+
+采用三层数据模型：
+
+1️⃣ 交易事实层（不可篡改）
+2️⃣ 结构状态层（可重建）
+3️⃣ 智能分析层（衍生数据）
+
+⸻
+
+二、核心实体关系总览
+
+核心实体包括：
+	•	商户
+	•	门店
+	•	商品
+	•	库存
+	•	订单
+	•	收款
+	•	预收权益账户
+	•	成本记录
+	•	现金账户
+	•	经营事件日志
+
+⸻
+
+三、数据库表结构设计（详细字段）
+
+以下为 MySQL / PostgreSQL 设计草案。
+
+⸻
+
+1️⃣ 商户与门店模块
+
+merchants
+
+字段	类型	说明
+id	bigint PK	商户ID
+name	varchar(255)	商户名称
+industry_type	varchar(100)	行业类型
+created_at	datetime	创建时间
+updated_at	datetime	更新时间
+
+
+⸻
+
+stores
+
+字段	类型	说明
+id	bigint PK	门店ID
+merchant_id	bigint FK	商户ID
+name	varchar(255)	门店名称
+location	varchar(255)	地址
+status	tinyint	状态
+created_at	datetime	创建时间
+
+
+⸻
+
+2️⃣ 商品与库存模块
+
+products
+
+字段	类型	说明
+id	bigint PK	
+merchant_id	bigint FK	
+name	varchar(255)	
+category	varchar(100)	
+selling_price	decimal(10,2)	
+standard_cost	decimal(10,2)	
+type	enum(‘normal’,‘service’,‘membership’)	
+created_at	datetime	
+
+
+⸻
+
+inventory_items
+
+字段	类型	说明
+id	bigint PK	
+product_id	bigint FK	
+store_id	bigint FK	
+quantity	int	
+average_cost	decimal(10,2)	
+updated_at	datetime	
+
+
+⸻
+
+inventory_transactions（库存流水）
+
+字段	类型	说明
+id	bigint PK	
+product_id	bigint	
+store_id	bigint	
+change_qty	int	
+change_type	enum(‘sale’,‘purchase’,‘adjust’,‘refund’)	
+reference_id	bigint	
+created_at	datetime	
+
+⚠️ 所有库存变化必须通过流水驱动。
+
+⸻
+
+3️⃣ 订单与收入模块
+
+orders
+
+字段	类型	说明
+id	bigint PK	
+store_id	bigint FK	
+order_no	varchar(64)	
+total_amount	decimal(10,2)	
+status	enum(‘pending’,‘paid’,‘cancelled’,‘refunded’)	
+payment_status	enum(‘unpaid’,‘partial’,‘paid’)	
+created_at	datetime	
+
+
+⸻
+
+order_items
+
+字段	类型	说明
+id	bigint PK	
+order_id	bigint FK	
+product_id	bigint	
+quantity	int	
+selling_price	decimal(10,2)	
+cost_price	decimal(10,2)	
+
+
+⸻
+
+payments
+
+字段	类型	说明
+id	bigint PK	
+order_id	bigint	
+store_id	bigint	
+amount	decimal(10,2)	
+payment_method	varchar(50)	
+received_at	datetime	
+
+
+⸻
+
+4️⃣ 预收权益负债模型（核心）
+
+这是你系统的关键。
+
+customer_accounts
+
+字段	类型	说明
+id	bigint PK	
+store_id	bigint	
+customer_id	bigint	
+balance_amount	decimal(10,2)	
+liability_amount	decimal(10,2)	
+updated_at	datetime	
+
+⚠️ balance ≠ 可自由支配资金
+liability = 未履约负债
+
+⸻
+
+customer_account_transactions
+
+字段	类型	说明
+id	bigint PK	
+account_id	bigint	
+change_amount	decimal(10,2)	
+change_type	enum(‘recharge’,‘consume’,‘refund’,‘adjust’)	
+reference_id	bigint	
+created_at	datetime	
+
+
+⸻
+
+5️⃣ 成本记录模块
+
+expense_records
+
+字段	类型	说明
+id	bigint PK	
+store_id	bigint	
+category	varchar(100)	
+amount	decimal(10,2)	
+expense_date	date	
+created_at	datetime	
+
+
+⸻
+
+6️⃣ 现金账户模块
+
+cash_accounts
+
+字段	类型	说明
+id	bigint PK	
+store_id	bigint	
+account_name	varchar(100)	
+balance	decimal(12,2)	
+updated_at	datetime	
+
+
+⸻
+
+cash_transactions
+
+字段	类型	说明
+id	bigint PK	
+account_id	bigint	
+change_amount	decimal(10,2)	
+change_type	enum(‘income’,‘expense’,‘transfer’)	
+reference_type	varchar(50)	
+reference_id	bigint	
+created_at	datetime	
+
+
+⸻
+
+7️⃣ 经营安全指数模型
+
+financial_snapshots（每日快照）
+
+字段	类型	说明
+id	bigint PK	
+store_id	bigint	
+snapshot_date	date	
+cash_balance	decimal(12,2)	
+total_liability	decimal(12,2)	
+inventory_value	decimal(12,2)	
+net_available_cash	decimal(12,2)	
+risk_index	decimal(5,2)	
+
+
+⸻
+
+8️⃣ 经营事件日志（AI基础）
+
+business_events
+
+字段	类型	说明
+id	bigint PK	
+store_id	bigint	
+event_type	varchar(100)	
+related_entity	varchar(50)	
+related_id	bigint	
+event_payload	json	
+created_at	datetime	
+
+
+⸻
+
+decision_logs
+
+字段	类型	说明
+id	bigint PK	
+event_id	bigint	
+ai_suggestion	text	
+human_decision	text	
+final_action	text	
+created_at	datetime	
+
+
+⸻
+
+四、核心逻辑说明
+
+⸻
+
+1️⃣ 现金安全度计算逻辑
+
+每日计算：
+
+现金安全余额 =
+现金账户余额
+	•	预收未履约负债
+	•	未来 30 天固定成本
+
+存入 financial_snapshots。
+
+⸻
+
+2️⃣ 单品真实贡献计算
+
+单品贡献 =
+销售收入
+	•	标准成本
+	•	直接分摊费用
+
+必须从 order_items + expense_records 聚合。
+
+⸻
+
+3️⃣ 经营风险指数（V1）
+
+建议公式：
+
+风险指数 =
+(未履约负债 / 现金余额) * 50
+	•	(库存周转天数 / 60) * 30
+	•	(近30天收入波动率) * 20
+
+标准化 0-100。
+
+⸻
+
+五、设计原则
+	1.	所有余额类字段必须可由流水重建
+	2.	禁止直接修改余额
+	3.	所有关键行为写入 business_events
+	4.	支持未来接入 AI 读取 JSON payload
+
+⸻
+
+六、为未来预留
+
+必须预留字段：
+	•	tenant_id（支持多租户）
+	•	version（数据结构演进）
+	•	is_deleted（软删除）
+	•	audit_trace_id（可追溯）
+
+⸻
+
+很好，这一步非常关键。
+
+数据库表只是“存储结构”，
+而 ER 逻辑 + 服务拆分，决定你未来 3 年是否能扩展成“经营基础设施”。
+
+我将输出两部分：
+
+1️⃣ ER 图逻辑说明（结构关系 + 约束规则）
+2️⃣ 核心服务拆分架构（可落地的微服务边界）
+
+⸻
+
+第一部分：ER 图逻辑说明（结构与因果模型）
+
+我们用“经营安全系统”的视角来设计 ER，而不是传统 POS 视角。
+
+系统核心围绕 6 个聚合根：
+	1.	商户 / 门店
+	2.	商品
+	3.	订单
+	4.	现金账户
+	5.	客户权益账户（负债核心）
+	6.	经营事件
+
+⸻
+
+一、商户体系（顶层实体）
+
+merchants
+
+⬇
+
+stores
+
+⬇
+关联所有业务实体
+
+关系：
+	•	一个 merchant 有多个 stores
+	•	所有数据必须带 store_id
+	•	所有业务隔离以 store 为单位
+
+⚠️ 强约束：
+	•	禁止跨门店引用订单
+	•	禁止跨门店共享现金账户
+
+⸻
+
+二、商品与库存体系
+
+products
+
+⬇
+
+inventory_items
+
+⬇
+
+inventory_transactions
+
+关系说明：
+	•	product 是静态定义
+	•	inventory_items 是“当前状态”
+	•	inventory_transactions 是“事实记录”
+
+强规则：
+
+库存数量 = sum(inventory_transactions.change_qty)
+
+inventory_items 只是缓存表。
+
+⚠️ 不能直接修改库存数量。
+
+⸻
+
+三、订单系统（收入驱动源）
+
+orders
+
+⬇
+
+order_items
+
+⬇
+
+payments
+
+⬇
+
+inventory_transactions（销售触发）
+
+逻辑链：
+
+创建订单
+→ 支付
+→ 库存减少
+→ 若为储值卡 → 进入 customer_account
+→ 写入 business_event
+
+⸻
+
+四、客户权益负债体系（你的核心差异化）
+
+这是整个系统的关键。
+
+customers
+
+⬇
+
+customer_accounts
+
+⬇
+
+customer_account_transactions
+
+逻辑：
+
+充值时：
+
+cash_transactions +income
+customer_account_transactions +recharge
+liability 增加
+
+消费时：
+
+customer_account_transactions -consume
+liability 减少
+
+退款时：
+
+cash_transactions -expense
+liability 减少
+
+⸻
+
+⚠️ 极重要规则：
+
+预收款 ≠ 收入
+
+customer_account.balance_amount 是客户权益
+customer_account.liability_amount 是门店负债
+
+现金流安全模型从这里计算。
+
+⸻
+
+五、现金系统（经营安全核心）
+
+cash_accounts
+
+⬇
+
+cash_transactions
+
+⬇
+由 payments / expense_records / transfer 触发
+
+强规则：
+
+现金余额 = sum(cash_transactions)
+
+禁止直接修改 balance。
+
+⸻
+
+六、成本体系
+
+expense_records
+
+成本来源：
+	•	固定成本
+	•	可变成本
+	•	临时支出
+
+这些将参与：
+	•	利润计算
+	•	风险指数计算
+	•	未来 30 天现金压力预测
+
+⸻
+
+七、经营安全快照系统
+
+financial_snapshots
+
+每日批量计算生成。
+
+来源：
+	•	cash_accounts
+	•	customer_accounts
+	•	expense_records
+	•	orders
+
+这是 AI 的主要读取源。
+
+⸻
+
+八、经营事件体系（AI 的根）
+
+business_events
+
+⬇
+
+decision_logs
+
+事件来源：
+	•	订单创建
+	•	储值充值
+	•	成本异常
+	•	库存异常
+	•	风险指数超阈值
+
+这是你未来 AI Agent 的知识土壤。
+
+⸻
+
+ER 总体关系结构（文字版）
+
+merchant
+└── store
+  ├── product
+  │  └── inventory
+  ├── order
+  │  ├── order_item
+  │  ├── payment
+  │  └── inventory_transaction
+  ├── customer
+  │  └── customer_account
+  │    └── account_transaction
+  ├── cash_account
+  │  └── cash_transaction
+  ├── expense_record
+  └── business_event
+    └── decision_log
+
+⸻
+
+第二部分：核心服务拆分架构
+
+你现在的规模不需要 20 个微服务。
+
+你需要“可扩展边界”。
+
+建议 V1 拆为 6 个核心服务。
+
+⸻
+
+1️⃣ Identity & Tenant Service
+
+职责：
+	•	商户
+	•	门店
+	•	用户权限
+	•	多租户隔离
+
+不能被 AI 修改。
+
+⸻
+
+2️⃣ Product & Inventory Service
+
+职责：
+	•	商品管理
+	•	库存管理
+	•	库存流水
+	•	成本计算基础
+
+只负责“物”。
+
+不关心收入。
+
+⸻
+
+3️⃣ Order & Revenue Service
+
+职责：
+	•	订单
+	•	订单项
+	•	支付
+	•	收入确认规则
+
+触发：
+	•	库存变动
+	•	现金流水
+	•	客户账户变动
+	•	经营事件
+
+它是“交易源头”。
+
+⸻
+
+4️⃣ Liability & Wallet Service（核心差异化）
+
+职责：
+	•	客户权益账户
+	•	负债计算
+	•	储值卡
+	•	次卡
+
+只做一件事：
+
+精确计算未履约负债
+
+未来可单独成为 SaaS。
+
+⸻
+
+5️⃣ Cash & Finance Core Service（核心灵魂）
+
+职责：
+	•	现金账户
+	•	现金流水
+	•	成本记录
+	•	每日快照
+	•	风险指数计算
+
+它是“经营安全引擎”。
+
+不能允许 AI 直接写。
+
+⸻
+
+6️⃣ Intelligence Service（AI层）
+
+职责：
+	•	风险分析
+	•	趋势预测
+	•	多方案模拟
+	•	生成解释
+	•	生成建议
+
+只能：
+	•	读 financial_snapshots
+	•	读 business_events
+	•	读聚合数据
+
+不能直接修改核心账务表。
+
+⸻
+
+服务交互关系
+
+Order Service
+→ 调用 Inventory Service
+→ 调用 Cash Service
+→ 调用 Liability Service
+→ 写入 Event Service
+
+Cash Service
+→ 生成 daily snapshot
+→ 触发 Intelligence Service
+
+Intelligence Service
+→ 写 decision_logs
+→ 等待人工确认
+→ 触发执行接口（受限）
+
+⸻
+
+未来扩展性
+
+当你做到 50 家店时：
+	•	Inventory 可独立扩展
+	•	Liability 可对接第三方 POS
+	•	Intelligence 可开放 API
+	•	Cash Core 可成为财务内核
+
+⸻
+
+技术实现建议（现实可落地）
+
+第一年不要真微服务。
+
+建议：
+
+单体应用 + 模块化架构
+领域隔离清晰
+数据库 schema 分区
+
+等 100 家店再拆。
+
+⸻
+
+系统哲学总结
+
+库存是“物理真实”
+订单是“交易真实”
+现金是“流动真实”
+负债是“未来真实”
+快照是“结构真实”
+AI是“认知真实”
+
+你构建的是：
+
+经营结构的完整映射系统
+
+⸻
