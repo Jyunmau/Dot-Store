@@ -1,15 +1,15 @@
 """
-Dot-Store V2.1 库存数据模型
+Dot-Store V2.2 库存数据模型
 """
-from datetime import datetime
-from sqlalchemy import Column, Integer, String, DateTime, Numeric, Text, ForeignKey
+from datetime import datetime, date
+from sqlalchemy import Column, Integer, String, DateTime, Date, Numeric, Text, ForeignKey
 from sqlalchemy.orm import relationship
 from ..core.database import Base
 
 
 class Ingredient(Base):
     """
-    食材模型
+    食材模型 - 结构状态层
     """
     __tablename__ = "ingredients"
 
@@ -18,7 +18,13 @@ class Ingredient(Base):
     name = Column(String(64), nullable=False)
     unit = Column(String(16), nullable=False)
     current_stock = Column(Numeric(12, 2), nullable=False, default=0)
+    min_stock = Column(Numeric(10, 2), default=0)
+    cost_per_unit = Column(Numeric(10, 2), default=0)
     warning_stock = Column(Numeric(12, 2), nullable=False, default=0)
+    category = Column(String(64), nullable=True)
+    supplier = Column(String(128), nullable=True)
+    expiry_date = Column(Date, nullable=True)
+    status = Column(String(32), default='active')
     created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
     updated_at = Column(DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)
 

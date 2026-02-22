@@ -1,5 +1,5 @@
 """
-Dot-Store V2.1 API v1模块
+Dot-Store V2.2 API v1模块
 """
 from fastapi import APIRouter
 from .auth import router as auth_router
@@ -14,6 +14,8 @@ from .stock import router as stock_router
 from .backup import router as backup_router, settings_router as backup_settings_router
 from .member import router as member_router
 from .push import router as push_router
+from .events import router as events_router
+from .stock_transactions import router as stock_transactions_router
 
 api_router = APIRouter()
 
@@ -30,5 +32,7 @@ api_router.include_router(backup_router)
 api_router.include_router(backup_settings_router)
 api_router.include_router(member_router)
 api_router.include_router(push_router)
+api_router.include_router(events_router)
+api_router.include_router(stock_transactions_router)
 
 __all__ = ["api_router"]
