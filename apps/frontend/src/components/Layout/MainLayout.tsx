@@ -1,6 +1,7 @@
 /**
  * Dot-Store V2.2 主布局组件
  * 支持响应式布局：移动端底部导航，桌面端侧边导航
+ * 遵循设计规范：触摸目标≥44px，按钮高度≥48px，导航高度≥64px
  */
 import React, { useState, useEffect } from 'react';
 import { Layout, Menu, Avatar, Dropdown, Button, Space, Drawer } from 'antd';
@@ -32,6 +33,12 @@ import { NetworkStatus } from '@/components/PWA';
 
 const { Sider, Content, Header } = Layout;
 
+const MOBILE_BREAKPOINT = 768;
+const MOBILE_NAV_HEIGHT = 64;
+const MOBILE_HEADER_HEIGHT = 56;
+const TOUCH_TARGET_MIN = 44;
+const BUTTON_HEIGHT_MOBILE = 48;
+
 /**
  * 判断是否为移动端
  */
@@ -40,7 +47,7 @@ const useIsMobile = () => {
 
   useEffect(() => {
     const checkIsMobile = () => {
-      setIsMobile(window.innerWidth < 768);
+      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
     };
 
     checkIsMobile();
@@ -81,7 +88,7 @@ const MainLayout: React.FC = () => {
   };
 
   /**
-   * V2.2 底部导航项
+   * V2.2 底部导航项 - 使用用户语言
    */
   const bottomNavItems = [
     {
@@ -112,7 +119,7 @@ const MainLayout: React.FC = () => {
   ];
 
   /**
-   * V2.2 侧边菜单项
+   * V2.2 侧边菜单项 - 使用用户语言
    */
   const menuItems = [
     {
@@ -309,14 +316,33 @@ const MainLayout: React.FC = () => {
   };
 
   /**
-   * 移动端布局
+   * 判断底部导航项是否激活
+   */
+  const isBottomNavItemActive = (key: string) => {
+    if (key === '/') {
+      return location.pathname === '/';
+    }
+    if (key === '/records/orders') {
+      return location.pathname.startsWith('/records');
+    }
+    if (key === '/insights/income') {
+      return location.pathname.startsWith('/insights');
+    }
+    if (key === '/reports') {
+      return location.pathname.startsWith('/reports');
+    }
+    return false;
+  };
+
+  /**
+   * 移动端布局 - 符合设计规范
    */
   if (isMobile) {
     return (
       <Layout style={{ minHeight: '100vh' }}>
         <Header
           style={{
-            padding: '0 16px',
+            padding: '0 12px',
             background: '#fff',
             display: 'flex',
             alignItems: 'center',
@@ -325,12 +351,13 @@ const MainLayout: React.FC = () => {
             position: 'sticky',
             top: 0,
             zIndex: 100,
+            height: MOBILE_HEADER_HEIGHT,
           }}
         >
-          <h1 style={{ margin: 0, fontSize: 18, fontWeight: 'bold', color: '#1890ff' }}>
-            Dot Store V2.2
+          <h1 style={{ margin: 0, fontSize: 16, fontWeight: 'bold', color: '#3B82F6' }}>
+            Dot Store
           </h1>
-          <div className="flex items-center gap-3">
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <NetworkStatus />
             <Dropdown
               menu={{
@@ -343,7 +370,15 @@ const MainLayout: React.FC = () => {
               }}
               placement="bottomRight"
             >
-              <Avatar icon={<UserOutlined />} style={{ cursor: 'pointer' }} />
+              <div style={{ 
+                minWidth: TOUCH_TARGET_MIN, 
+                minHeight: TOUCH_TARGET_MIN, 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center' 
+              }}>
+                <Avatar icon={<UserOutlined />} style={{ cursor: 'pointer' }} size={32} />
+              </div>
             </Dropdown>
           </div>
         </Header>
@@ -351,49 +386,62 @@ const MainLayout: React.FC = () => {
         <Content
           style={{
             margin: 0,
-            background: '#f5f5f5',
-            minHeight: 'calc(100vh - 64px - 64px)',
-            paddingBottom: '64px',
+            background: '#F9FAFB',
+            minHeight: `calc(100vh - ${MOBILE_HEADER_HEIGHT}px - ${MOBILE_NAV_HEIGHT}px)`,
+            paddingBottom: MOBILE_NAV_HEIGHT,
             overflow: 'auto',
+            WebkitOverflowScrolling: 'touch',
           }}
         >
           <Outlet />
         </Content>
 
-        <div
+        <nav
           style={{
             position: 'fixed',
             bottom: 0,
             left: 0,
             right: 0,
             background: '#fff',
-            borderTop: '1px solid #f0f0f0',
+            borderTop: '1px solid #E5E7EB',
             display: 'flex',
             justifyContent: 'space-around',
-            padding: '8px 0',
+            alignItems: 'center',
+            height: MOBILE_NAV_HEIGHT,
             zIndex: 100,
+            boxShadow: '0 -2px 8px rgba(0, 0, 0, 0.05)',
           }}
         >
-          {bottomNavItems.map((item) => (
-            <div
-              key={item.key}
-              onClick={() => handleBottomNavClick(item.key)}
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                cursor: 'pointer',
-                color: location.pathname === item.key ? '#1890ff' : '#666',
-                padding: '4px 12px',
-                minWidth: '48px',
-                minHeight: '44px',
-              }}
-            >
-              <span style={{ fontSize: '20px' }}>{item.icon}</span>
-              <span style={{ fontSize: '12px', marginTop: '2px' }}>{item.label}</span>
-            </div>
-          ))}
-        </div>
+          {bottomNavItems.map((item) => {
+            const isActive = isBottomNavItemActive(item.key);
+            return (
+              <button
+                key={item.key}
+                onClick={() => handleBottomNavClick(item.key)}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  color: isActive ? '#3B82F6' : '#6B7280',
+                  background: 'transparent',
+                  border: 'none',
+                  padding: '8px 12px',
+                  minWidth: TOUCH_TARGET_MIN,
+                  minHeight: TOUCH_TARGET_MIN,
+                  flex: 1,
+                  transition: 'color 0.2s ease',
+                  touchAction: 'manipulation',
+                }}
+                aria-label={item.label}
+              >
+                <span style={{ fontSize: 22, marginBottom: 2 }}>{item.icon}</span>
+                <span style={{ fontSize: 11, fontWeight: isActive ? 500 : 400 }}>{item.label}</span>
+              </button>
+            );
+          })}
+        </nav>
 
         <Drawer
           title="菜单"
@@ -401,6 +449,9 @@ const MainLayout: React.FC = () => {
           onClose={() => setDrawerVisible(false)}
           open={drawerVisible}
           width={280}
+          styles={{
+            body: { padding: 0 },
+          }}
         >
           <Menu
             mode="inline"
@@ -444,7 +495,7 @@ const MainLayout: React.FC = () => {
               margin: 0,
               fontSize: collapsed ? 16 : 20,
               fontWeight: 'bold',
-              color: '#1890ff',
+              color: '#3B82F6',
               whiteSpace: 'nowrap',
             }}
           >
@@ -477,7 +528,7 @@ const MainLayout: React.FC = () => {
             onClick={() => setCollapsed(!collapsed)}
             style={{ fontSize: 16 }}
           />
-          <div className="flex items-center gap-4">
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
             <NetworkStatus />
             <Dropdown
               menu={{
@@ -500,7 +551,7 @@ const MainLayout: React.FC = () => {
         <Content
           style={{
             margin: 0,
-            background: '#f5f5f5',
+            background: '#F9FAFB',
             minHeight: 'calc(100vh - 64px)',
           }}
         >
