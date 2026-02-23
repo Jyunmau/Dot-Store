@@ -38,9 +38,13 @@ class EventType(str, Enum):
     CUSTOMER_CREATED = 'customer_created'
     CUSTOMER_RECHARGE = 'customer_recharge'
     CUSTOMER_CONSUME = 'customer_consume'
+    CUSTOMER_ACCOUNT_CREATED = 'customer_account_created'
+    CUSTOMER_ACCOUNT_UPDATED = 'customer_account_updated'
     
     CASH_INCOME = 'cash_income'
     CASH_EXPENSE = 'cash_expense'
+    CASH_ACCOUNT_CREATED = 'cash_account_created'
+    CASH_ACCOUNT_UPDATED = 'cash_account_updated'
     
     FINANCIAL_SNAPSHOT_CREATED = 'financial_snapshot_created'
     

@@ -16,6 +16,8 @@ from .member import router as member_router
 from .push import router as push_router
 from .events import router as events_router
 from .stock_transactions import router as stock_transactions_router
+from .customer_accounts import router as customer_accounts_router
+from .cash_accounts import router as cash_accounts_router
 
 api_router = APIRouter()
 
@@ -34,5 +36,7 @@ api_router.include_router(member_router)
 api_router.include_router(push_router)
 api_router.include_router(events_router)
 api_router.include_router(stock_transactions_router)
+api_router.include_router(customer_accounts_router)
+api_router.include_router(cash_accounts_router)
 
 __all__ = ["api_router"]

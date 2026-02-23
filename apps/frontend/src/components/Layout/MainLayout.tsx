@@ -26,6 +26,8 @@ import {
   SafetyCertificateOutlined,
   TeamOutlined,
   CloudServerOutlined,
+  AccountBookOutlined,
+  WalletOutlined,
 } from '@ant-design/icons';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/store/authStore';
@@ -211,6 +213,26 @@ const MainLayout: React.FC = () => {
       type: 'divider' as const,
     },
     {
+      key: 'accounts',
+      icon: <AccountBookOutlined />,
+      label: '账户',
+      children: [
+        {
+          key: '/accounts/customers',
+          icon: <TeamOutlined />,
+          label: '客户账户',
+        },
+        {
+          key: '/accounts/cash',
+          icon: <WalletOutlined />,
+          label: '现金账户',
+        },
+      ],
+    },
+    {
+      type: 'divider' as const,
+    },
+    {
       key: '/stock/warnings',
       icon: <WarningOutlined />,
       label: '库存预警',
@@ -312,6 +334,7 @@ const MainLayout: React.FC = () => {
     if (path.startsWith('/insights')) return ['insights'];
     if (path.startsWith('/reports')) return ['reports'];
     if (path.startsWith('/settings')) return ['settings'];
+    if (path.startsWith('/accounts')) return ['accounts'];
     return [];
   };
 

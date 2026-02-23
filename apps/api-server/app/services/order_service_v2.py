@@ -10,12 +10,19 @@ from ..models.order import Order
 from ..models.order_item import OrderItem
 from ..models.payment import Payment
 from ..services.event_service import EventService
+from ..services.customer_account_service import CustomerAccountService
+from ..services.cash_account_service import CashAccountService
 
 
 class OrderServiceV2:
     """
     订单服务类 - V2.2版本
     """
+
+    PAYMENT_METHOD_CUSTOMER = 'customer_account'
+    PAYMENT_METHOD_CASH = 'cash'
+    PAYMENT_METHOD_WECHAT = 'wechat'
+    PAYMENT_METHOD_ALIPAY = 'alipay'
 
     @staticmethod
     def generate_order_no(db: Session, user_id: int) -> str:
@@ -55,6 +62,10 @@ class OrderServiceV2:
     ) -> Order:
         """
         创建订单
+        
+        支付联动逻辑：
+        1. 如果支付方式是客户账户，触发客户账户消费
+        2. 触发现金账户收入记录
         """
         order_no = OrderServiceV2.generate_order_no(db, user_id)
         
@@ -88,6 +99,42 @@ class OrderServiceV2:
                 )
                 db.add(item)
         
+        customer_transaction_id = None
+        
+        if payment_method == OrderServiceV2.PAYMENT_METHOD_CUSTOMER and customer_account_id:
+            try:
+                customer_transaction = CustomerAccountService.consume(
+                    db=db,
+                    user_id=user_id,
+                    account_id=customer_account_id,
+                    amount=amount,
+                    order_id=order.id,
+                    note=f"订单消费：{order_no}",
+                    operator_id=created_by or user_id,
+                    ip_address=ip_address
+                )
+                customer_transaction_id = customer_transaction.id
+            except ValueError as e:
+                db.rollback()
+                raise ValueError(f"客户账户消费失败：{str(e)}")
+        
+        if payment_method and amount > 0:
+            try:
+                CashAccountService.record_income(
+                    db=db,
+                    user_id=user_id,
+                    amount=amount,
+                    category='order_income',
+                    order_id=order.id,
+                    customer_transaction_id=customer_transaction_id,
+                    note=f"订单收入：{order_no}，支付方式：{payment_method}",
+                    operator_id=created_by or user_id,
+                    ip_address=ip_address
+                )
+            except ValueError as e:
+                db.rollback()
+                raise ValueError(f"现金账户记录失败：{str(e)}")
+        
         db.commit()
         db.refresh(order)
         
@@ -102,7 +149,8 @@ class OrderServiceV2:
                 'order_no': order_no,
                 'amount': float(amount),
                 'order_type': order_type,
-                'payment_method': payment_method
+                'payment_method': payment_method,
+                'customer_account_id': customer_account_id
             },
             ip_address=ip_address
         )

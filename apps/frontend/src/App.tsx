@@ -17,6 +17,8 @@ import { BackupManagePage, BackupSettingsPage } from '@/pages/backup';
 import { MainLayout } from '@/components/Layout';
 import { OfflineIndicator, PWAInstallPrompt } from '@/components/PWA';
 import { EventLog } from '@/pages/event';
+import { CustomerList } from '@/pages/customer';
+import { CashAccount } from '@/pages/cash';
 
 /**
  * 受保护的路由组件
@@ -118,6 +120,10 @@ const App: React.FC = () => {
               <Route path="records/orders" element={<OrderListPage />} />
               <Route path="records/transactions" element={<TransactionListPage />} />
               <Route path="records/stock" element={<IngredientListPage />} />
+              
+              {/* V2.2 账户模块 */}
+              <Route path="accounts/customers" element={<CustomerList />} />
+              <Route path="accounts/cash" element={<CashAccount />} />
               
               {/* V2.2 洞察模块 - 占位页面 */}
               <Route path="insights/income" element={<DashboardPage />} />

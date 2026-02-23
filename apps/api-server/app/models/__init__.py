@@ -12,6 +12,8 @@ from .member import Member, PointsRecord, PointsExchange
 from .backup import Backup, BackupSettings
 from .push import PushSubscription
 from .business_event import BusinessEvent
+from .customer_account import CustomerAccount, CustomerTransaction, TransactionType
+from .cash_account import CashAccount, CashTransaction, CashTransactionType
 
 __all__ = [
     "User",
@@ -31,4 +33,10 @@ __all__ = [
     "BackupSettings",
     "PushSubscription",
     "BusinessEvent",
+    "CustomerAccount",
+    "CustomerTransaction",
+    "TransactionType",
+    "CashAccount",
+    "CashTransaction",
+    "CashTransactionType",
 ]
