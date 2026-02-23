@@ -1,5 +1,5 @@
 """
-Dot-Store V2.1 认证API路由
+Dot-Store V2.2 认证API路由
 """
 from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -22,6 +22,9 @@ from app.schemas.user import (
     StaffCreate,
     StaffResponse,
     PermissionUpdate,
+    APIKeyCreate,
+    APIKeyResponse,
+    APIKeyStatus,
 )
 from app.services.auth_service import AuthService
 from app.models.user import User
@@ -231,3 +234,65 @@ async def remove_staff(
     auth_service.remove_staff(staff_id, current_user.id)
     
     return {"message": "店员移除成功"}
+
+
+# ==================== API密钥管理接口 ====================
+
+@router.post("/api-key", response_model=APIKeyResponse, summary="生成API密钥")
+async def generate_api_key(
+    api_key_data: APIKeyCreate,
+    current_user: User = Depends(get_current_owner),
+    db: Session = Depends(get_db)
+):
+    """
+    生成API密钥接口（仅店主可用）
+    
+    - API密钥格式：sk_ + 32位随机字符串
+    - 密钥仅创建时显示一次，请妥善保管
+    - 可设置有效期，不设置则永不过期
+    """
+    auth_service = AuthService(db)
+    result = auth_service.generate_api_key(
+        current_user.id, 
+        api_key_data.expires_days
+    )
+    
+    return APIKeyResponse(
+        api_key=result["api_key"],
+        created_at=result["created_at"],
+        expires_at=result["expires_at"]
+    )
+
+
+@router.delete("/api-key", summary="撤销API密钥")
+async def revoke_api_key(
+    current_user: User = Depends(get_current_owner),
+    db: Session = Depends(get_db)
+):
+    """
+    撤销API密钥接口（仅店主可用）
+    
+    - 撤销后原密钥立即失效
+    - 可重新生成新密钥
+    """
+    auth_service = AuthService(db)
+    auth_service.revoke_api_key(current_user.id)
+    
+    return {"message": "API密钥已撤销"}
+
+
+@router.get("/api-key", response_model=APIKeyStatus, summary="获取API密钥状态")
+async def get_api_key_status(
+    current_user: User = Depends(get_current_owner),
+    db: Session = Depends(get_db)
+):
+    """
+    获取API密钥状态接口（仅店主可用）
+    
+    - 返回密钥是否存在、创建时间、过期时间等信息
+    - 不返回密钥本身
+    """
+    auth_service = AuthService(db)
+    result = auth_service.get_api_key_status(current_user.id)
+    
+    return APIKeyStatus(**result)

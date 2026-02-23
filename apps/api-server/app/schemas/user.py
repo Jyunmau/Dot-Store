@@ -187,3 +187,32 @@ class StaffResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class APIKeyCreate(BaseModel):
+    """
+    API密钥创建模式
+    """
+    expires_days: Optional[int] = Field(None, ge=1, le=365, description="有效期天数，不设置则永不过期")
+
+
+class APIKeyResponse(BaseModel):
+    """
+    API密钥响应模式
+    """
+    api_key: str = Field(..., description="API密钥（仅创建时显示一次）")
+    created_at: datetime
+    expires_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
+
+
+class APIKeyStatus(BaseModel):
+    """
+    API密钥状态模式
+    """
+    has_api_key: bool
+    created_at: Optional[datetime] = None
+    expires_at: Optional[datetime] = None
+    is_expired: bool = False
