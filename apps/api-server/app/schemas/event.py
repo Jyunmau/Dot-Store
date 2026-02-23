@@ -48,6 +48,10 @@ class EventType(str, Enum):
     
     FINANCIAL_SNAPSHOT_CREATED = 'financial_snapshot_created'
     
+    EXPENSE_CREATE = 'expense_create'
+    EXPENSE_UPDATE = 'expense_update'
+    EXPENSE_DELETE = 'expense_delete'
+    
     BACKUP_CREATED = 'backup_created'
     BACKUP_RESTORED = 'backup_restored'
     

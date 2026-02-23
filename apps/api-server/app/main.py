@@ -9,6 +9,7 @@ from contextlib import asynccontextmanager
 
 from .core.config import settings
 from .core.database import engine, Base
+from .core.scheduler import start_scheduler, shutdown_scheduler
 from .api import api_router
 
 UPLOAD_DIR = "uploads"
@@ -22,13 +23,15 @@ async def lifespan(app: FastAPI):
     Base.metadata.create_all(bind=engine)
     if not os.path.exists(UPLOAD_DIR):
         os.makedirs(UPLOAD_DIR)
+    start_scheduler()
     yield
+    shutdown_scheduler()
 
 
 app = FastAPI(
     title=settings.APP_NAME,
     version=settings.APP_VERSION,
-    description="Dot-Store 点单收银系统 - V2.1版本",
+    description="Dot-Store 点单收银系统 - V2.2版本",
     openapi_url=f"{settings.API_V1_PREFIX}/openapi.json",
     docs_url="/docs",
     redoc_url="/redoc",

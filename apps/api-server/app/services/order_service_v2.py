@@ -12,6 +12,7 @@ from ..models.payment import Payment
 from ..services.event_service import EventService
 from ..services.customer_account_service import CustomerAccountService
 from ..services.cash_account_service import CashAccountService
+from ..services.stock_transaction_service import StockTransactionService
 
 
 class OrderServiceV2:
@@ -90,6 +91,7 @@ class OrderServiceV2:
             for item_data in items:
                 item = OrderItem(
                     order_id=order.id,
+                    ingredient_id=item_data.get('ingredient_id'),
                     product_name=item_data.get('product_name'),
                     quantity=Decimal(str(item_data.get('quantity', 0))),
                     unit_price=Decimal(str(item_data.get('unit_price', 0))),
@@ -98,6 +100,21 @@ class OrderServiceV2:
                     note=item_data.get('note')
                 )
                 db.add(item)
+                
+                if item_data.get('ingredient_id'):
+                    try:
+                        StockTransactionService.stock_out(
+                            db=db,
+                            user_id=user_id,
+                            ingredient_id=item_data.get('ingredient_id'),
+                            quantity=Decimal(str(item_data.get('quantity', 0))),
+                            note=f"订单出库：{order_no}，产品：{item_data.get('product_name')}",
+                            operator_id=created_by or user_id,
+                            ip_address=ip_address
+                        )
+                    except ValueError as e:
+                        db.rollback()
+                        raise ValueError(f"库存出库失败：{str(e)}")
         
         customer_transaction_id = None
         
@@ -354,10 +371,14 @@ class OrderServiceV2:
         quantity: Decimal,
         unit_price: Decimal,
         cost_price: Decimal = None,
-        note: str = None
+        ingredient_id: int = None,
+        note: str = None,
+        ip_address: str = None
     ) -> OrderItem:
         """
         添加订单项
+        
+        如果关联了食材，自动触发库存出库
         """
         order = db.query(Order).filter(
             Order.id == order_id,
@@ -369,6 +390,7 @@ class OrderServiceV2:
         
         item = OrderItem(
             order_id=order_id,
+            ingredient_id=ingredient_id,
             product_name=product_name,
             quantity=quantity,
             unit_price=unit_price,
@@ -378,6 +400,22 @@ class OrderServiceV2:
         )
         
         db.add(item)
+        
+        if ingredient_id:
+            try:
+                StockTransactionService.stock_out(
+                    db=db,
+                    user_id=user_id,
+                    ingredient_id=ingredient_id,
+                    quantity=quantity,
+                    note=f"订单出库：{order.order_no}，产品：{product_name}",
+                    operator_id=user_id,
+                    ip_address=ip_address
+                )
+            except ValueError as e:
+                db.rollback()
+                raise ValueError(f"库存出库失败：{str(e)}")
+        
         db.commit()
         db.refresh(item)
         

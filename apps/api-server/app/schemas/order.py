@@ -3,7 +3,7 @@ Dot-Store V2.2 订单数据模式
 """
 from datetime import datetime
 from decimal import Decimal
-from typing import Optional, List, Any
+from typing import Optional, List, Any, Dict
 from pydantic import BaseModel, Field, ConfigDict
 
 
@@ -29,6 +29,7 @@ class OrderItemCreate(BaseModel):
     quantity: Decimal = Field(..., gt=0, description="数量")
     unit_price: Decimal = Field(..., ge=0, description="单价")
     cost_price: Optional[Decimal] = Field(None, ge=0, description="成本价")
+    ingredient_id: Optional[int] = Field(None, description="关联食材ID")
     note: Optional[str] = Field(None, description="备注")
 
 
@@ -38,6 +39,7 @@ class OrderItemResponse(BaseModel):
     
     id: int = Field(..., description="订单项ID")
     order_id: int = Field(..., description="订单ID")
+    ingredient_id: Optional[int] = Field(None, description="关联食材ID")
     product_name: str = Field(..., description="产品名称")
     quantity: Decimal = Field(..., description="数量")
     unit_price: Decimal = Field(..., description="单价")
@@ -115,8 +117,8 @@ class OrderSummary(BaseModel):
     """订单汇总"""
     total_orders: int = Field(0, description="总订单数")
     total_amount: Decimal = Field(0, description="总金额")
-    by_type: dict = Field(default_factory=dict, description="按类型统计")
-    by_payment: dict = Field(default_factory=dict, description="按支付方式统计")
+    by_type: Dict[str, Any] = Field(default_factory=dict, description="按类型统计")
+    by_payment: Dict[str, Any] = Field(default_factory=dict, description="按支付方式统计")
 
 
 class OrderCategoryCreate(BaseModel):

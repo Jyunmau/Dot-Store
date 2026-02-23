@@ -1,7 +1,7 @@
 {
   "name": "dot-store-frontend",
-  "version": "2.1.0",
-  "description": "Dot-Store 点单收银系统前端 - V2.1版本",
+  "version": "2.2.0",
+  "description": "Dot-Store 点单收银系统前端 - V2.2版本",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -17,6 +17,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.21.0",
+    "recharts": "^2.15.4",
     "zustand": "^4.4.7"
   },
   "devDependencies": {

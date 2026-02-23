@@ -26,5 +26,11 @@ email-validator==2.1.0
 # 报表导出
 openpyxl==3.1.2
 
+# 定时任务
+apscheduler==3.10.4
+
+# 数据分析
+numpy==1.26.3
+
 # 工具
 python-dotenv==1.0.0

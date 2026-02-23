@@ -373,3 +373,108 @@ class StockTransactionService:
             'low_stock_count': low_stock_count,
             'expiring_count': expiring_count
         }
+
+    @staticmethod
+    def rebuild_stock_balance(db: Session, user_id: int, ingredient_id: int = None) -> dict:
+        """
+        从流水重建库存余额
+        用于数据校验和修复
+        
+        Args:
+            db: 数据库会话
+            user_id: 用户ID
+            ingredient_id: 食材ID，如果为None则重建所有食材
+            
+        Returns:
+            dict: 重建结果，包含修复的食材数量和详情
+        """
+        query = db.query(Ingredient).filter(
+            Ingredient.user_id == user_id,
+            Ingredient.status == 'active'
+        )
+        
+        if ingredient_id:
+            query = query.filter(Ingredient.id == ingredient_id)
+        
+        ingredients = query.all()
+        results = []
+        fixed_count = 0
+        
+        for ingredient in ingredients:
+            transactions = db.query(StockTransaction).filter(
+                StockTransaction.ingredient_id == ingredient.id
+            ).order_by(StockTransaction.created_at.asc()).all()
+            
+            calculated_stock = Decimal('0')
+            for t in transactions:
+                if t.transaction_type in [StockTransactionType.PURCHASE, StockTransactionType.ADJUST_ADD, StockTransactionType.RETURN, StockTransactionType.TRANSFER_IN]:
+                    calculated_stock += t.quantity
+                elif t.transaction_type in [StockTransactionType.CONSUME, StockTransactionType.ADJUST_SUB, StockTransactionType.TRANSFER_OUT]:
+                    calculated_stock -= t.quantity
+            
+            original_stock = ingredient.current_stock
+            is_consistent = abs(original_stock - calculated_stock) < Decimal('0.01')
+            
+            if not is_consistent:
+                ingredient.current_stock = calculated_stock
+                ingredient.updated_at = datetime.utcnow()
+                fixed_count += 1
+                
+                results.append({
+                    'ingredient_id': ingredient.id,
+                    'ingredient_name': ingredient.name,
+                    'original_stock': float(original_stock),
+                    'calculated_stock': float(calculated_stock),
+                    'fixed': True
+                })
+            else:
+                results.append({
+                    'ingredient_id': ingredient.id,
+                    'ingredient_name': ingredient.name,
+                    'original_stock': float(original_stock),
+                    'calculated_stock': float(calculated_stock),
+                    'fixed': False
+                })
+        
+        if fixed_count > 0:
+            db.commit()
+        
+        return {
+            'total_checked': len(ingredients),
+            'fixed_count': fixed_count,
+            'details': results
+        }
+
+    @staticmethod
+    def rebuild_stock_value(db: Session, user_id: int) -> dict:
+        """
+        从流水重建库存价值
+        用于数据校验和修复
+        
+        Args:
+            db: 数据库会话
+            user_id: 用户ID
+            
+        Returns:
+            dict: 重建结果
+        """
+        from sqlalchemy import func
+        
+        ingredients = db.query(Ingredient).filter(
+            Ingredient.user_id == user_id,
+            Ingredient.status == 'active'
+        ).all()
+        
+        calculated_value = Decimal('0')
+        for ingredient in ingredients:
+            calculated_value += ingredient.current_stock * (ingredient.cost_per_unit or Decimal('0'))
+        
+        stored_value = StockTransactionService.get_total_stock_value(db, user_id)
+        
+        is_consistent = abs(stored_value - calculated_value) < Decimal('0.01')
+        
+        return {
+            'stored_value': float(stored_value),
+            'calculated_value': float(calculated_value),
+            'is_consistent': is_consistent
+        }

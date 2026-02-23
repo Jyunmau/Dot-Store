@@ -224,6 +224,45 @@ async def get_stock_value(
     return {"total_value": float(value)}
 
 
+@router.post("/rebuild", summary="重建库存余额")
+async def rebuild_stock_balance(
+    ingredient_id: Optional[int] = Query(None, description="食材ID，不传则重建所有"),
+    current_user: User = Depends(get_current_active_user),
+    db: Session = Depends(get_db)
+):
+    """
+    从流水重建库存余额
+    
+    - 用于数据校验和修复
+    - 可指定单个食材或重建所有
+    - 返回修复详情
+    """
+    result = StockTransactionService.rebuild_stock_balance(
+        db=db,
+        user_id=current_user.id,
+        ingredient_id=ingredient_id
+    )
+    return result
+
+
+@router.post("/rebuild-value", summary="重建库存价值")
+async def rebuild_stock_value(
+    current_user: User = Depends(get_current_active_user),
+    db: Session = Depends(get_db)
+):
+    """
+    从流水重建库存价值
+    
+    - 用于数据校验
+    - 返回存储值与计算值的对比
+    """
+    result = StockTransactionService.rebuild_stock_value(
+        db=db,
+        user_id=current_user.id
+    )
+    return result
+
+
 @router.get("/ingredients", response_model=IngredientListResponse, summary="获取食材列表")
 async def get_ingredients(
     category: Optional[str] = Query(None, description="分类"),

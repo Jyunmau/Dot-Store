@@ -107,7 +107,7 @@ const IngredientListPage: React.FC = () => {
         name: values.name,
         unit: values.unit,
         current_stock: values.current_stock || 0,
-        warning_stock: values.warning_stock || 0,
+        min_stock: values.warning_stock || 0,
       };
 
       if (editingIngredient) {

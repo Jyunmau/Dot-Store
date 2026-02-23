@@ -1,5 +1,5 @@
 """
-Dot-Store V2.1 用户数据模型
+Dot-Store V2.2 用户数据模型
 """
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, DateTime, Boolean, Text
@@ -30,6 +30,14 @@ class User(Base):
     
     # 店员权限（JSON格式存储）
     permissions = Column(Text, nullable=True)
+    
+    # API密钥相关字段（V2.2新增）
+    api_key = Column(String(64), unique=True, nullable=True, index=True)
+    api_key_created_at = Column(DateTime, nullable=True)
+    api_key_expires_at = Column(DateTime, nullable=True)
+    
+    # 关系
+    preferences = relationship("UserPreference", back_populates="user", uselist=False)
 
     def __repr__(self):
         return f"<User(id={self.id}, phone={self.phone}, email={self.email}, role={self.role})>"

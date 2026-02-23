@@ -162,7 +162,7 @@ class CashAccountService:
             user_id=user_id,
             account_id=account.id,
             transaction_no=transaction_no,
-            transaction_type=CashTransactionType.INCOME.value,
+            transaction_type=CashTransactionType.INCOME,
             category=category,
             amount=amount,
             balance_before=balance_before,
@@ -244,7 +244,7 @@ class CashAccountService:
             user_id=user_id,
             account_id=account.id,
             transaction_no=transaction_no,
-            transaction_type=CashTransactionType.EXPENSE.value,
+            transaction_type=CashTransactionType.EXPENSE,
             category=category,
             amount=amount,
             balance_before=balance_before,
@@ -346,16 +346,16 @@ class CashAccountService:
         categories: Dict[str, Decimal] = {}
         
         for t in transactions:
-            if t.transaction_type == CashTransactionType.INCOME.value:
+            if t.transaction_type == CashTransactionType.INCOME:
                 total_income += t.amount
-            elif t.transaction_type == CashTransactionType.EXPENSE.value:
+            elif t.transaction_type == CashTransactionType.EXPENSE:
                 total_expense += t.amount
             
             if t.category not in categories:
                 categories[t.category] = Decimal('0')
-            if t.transaction_type == CashTransactionType.INCOME.value:
+            if t.transaction_type == CashTransactionType.INCOME:
                 categories[t.category] += t.amount
-            elif t.transaction_type == CashTransactionType.EXPENSE.value:
+            elif t.transaction_type == CashTransactionType.EXPENSE:
                 categories[t.category] -= t.amount
         
         return {
@@ -381,9 +381,9 @@ class CashAccountService:
         calculated_balance = Decimal('0')
         
         for t in transactions:
-            if t.transaction_type in [CashTransactionType.INCOME.value, CashTransactionType.TRANSFER_IN.value, CashTransactionType.ADJUST_ADD.value]:
+            if t.transaction_type in [CashTransactionType.INCOME, CashTransactionType.TRANSFER_IN, CashTransactionType.ADJUST_ADD]:
                 calculated_balance += t.amount
-            elif t.transaction_type in [CashTransactionType.EXPENSE.value, CashTransactionType.TRANSFER_OUT.value, CashTransactionType.ADJUST_SUB.value]:
+            elif t.transaction_type in [CashTransactionType.EXPENSE, CashTransactionType.TRANSFER_OUT, CashTransactionType.ADJUST_SUB]:
                 calculated_balance -= t.amount
         
         original_balance = account.balance

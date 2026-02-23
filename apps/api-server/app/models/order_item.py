@@ -15,6 +15,7 @@ class OrderItem(Base):
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     order_id = Column(Integer, ForeignKey("orders.id"), nullable=False, index=True)
+    ingredient_id = Column(Integer, ForeignKey("ingredients.id"), nullable=True, index=True)
     product_name = Column(String(128), nullable=False)
     quantity = Column(Numeric(10, 2), nullable=False)
     unit_price = Column(Numeric(10, 2), nullable=False)

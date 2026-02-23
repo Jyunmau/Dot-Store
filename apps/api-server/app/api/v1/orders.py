@@ -219,6 +219,8 @@ async def add_order_item(
 ):
     """
     添加订单项
+    
+    - 如果关联了食材ID，自动触发库存出库
     """
     try:
         from decimal import Decimal
@@ -230,12 +232,13 @@ async def add_order_item(
             quantity=Decimal(str(item_data.quantity)),
             unit_price=Decimal(str(item_data.unit_price)),
             cost_price=Decimal(str(item_data.cost_price)) if item_data.cost_price else None,
+            ingredient_id=item_data.ingredient_id,
             note=item_data.note
         )
         return OrderItemResponse.model_validate(item)
     except ValueError as e:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
+            status_code=status.HTTP_400_BAD_REQUEST,
             detail=str(e)
         )
 

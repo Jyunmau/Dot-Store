@@ -138,6 +138,15 @@ export interface StockAdjustParams {
 }
 
 /**
+ * 库存记录参数（入库/出库通用）
+ */
+export interface StockRecordParams {
+  ingredient_id: number;
+  quantity: number | string;
+  note?: string;
+}
+
+/**
  * 食材列表响应
  */
 export interface IngredientListResponse {

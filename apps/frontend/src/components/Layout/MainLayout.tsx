@@ -39,7 +39,6 @@ const MOBILE_BREAKPOINT = 768;
 const MOBILE_NAV_HEIGHT = 64;
 const MOBILE_HEADER_HEIGHT = 56;
 const TOUCH_TARGET_MIN = 44;
-const BUTTON_HEIGHT_MOBILE = 48;
 
 /**
  * 判断是否为移动端

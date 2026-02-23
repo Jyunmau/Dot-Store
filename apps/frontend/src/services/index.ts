@@ -6,3 +6,4 @@ export { reportService } from './reportService';
 export { pushNotificationService } from './pushService';
 export { eventService } from './eventService';
 export { stockService } from './stockService';
+export { default as cashFlowService } from './cashFlowService';

@@ -18,6 +18,11 @@ from .events import router as events_router
 from .stock_transactions import router as stock_transactions_router
 from .customer_accounts import router as customer_accounts_router
 from .cash_accounts import router as cash_accounts_router
+from .expenses import router as expenses_router
+from .financial import router as financial_router
+from .cashflow import router as cashflow_router
+from .risk_alerts import router as risk_alerts_router
+from .preferences import router as preferences_router
 
 api_router = APIRouter()
 
@@ -38,5 +43,10 @@ api_router.include_router(events_router)
 api_router.include_router(stock_transactions_router)
 api_router.include_router(customer_accounts_router)
 api_router.include_router(cash_accounts_router)
+api_router.include_router(expenses_router)
+api_router.include_router(financial_router)
+api_router.include_router(cashflow_router)
+api_router.include_router(risk_alerts_router)
+api_router.include_router(preferences_router)
 
 __all__ = ["api_router"]

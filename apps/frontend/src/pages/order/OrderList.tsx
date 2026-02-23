@@ -42,7 +42,6 @@ import {
   getOrderStatusLabel, 
   ORDER_TYPE_OPTIONS, 
   ORDER_STATUS_OPTIONS,
-  PAYMENT_METHOD_OPTIONS,
   getPaymentMethodLabel,
 } from '@/types/order';
 import OrderForm from './OrderForm';
@@ -103,7 +102,6 @@ const OrderListPage: React.FC = () => {
     pageSize,
     isLoading,
     listOrders,
-    deleteOrder,
     listCategories,
     categories,
   } = useOrderStore();
@@ -125,18 +123,6 @@ const OrderListPage: React.FC = () => {
     listOrders(filters);
     listCategories();
   }, [filters, listOrders, listCategories]);
-
-  /**
-   * 处理删除订单
-   */
-  const handleDelete = async (orderId: number) => {
-    try {
-      await deleteOrder(orderId);
-      message.success('订单删除成功');
-    } catch {
-      message.error('订单删除失败');
-    }
-  };
 
   /**
    * 处理编辑订单

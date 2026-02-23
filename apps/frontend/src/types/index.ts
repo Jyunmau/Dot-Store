@@ -4,3 +4,4 @@ export * from './report';
 export * from './member';
 export * from './event';
 export * from './stock';
+export * from './cashFlow';
